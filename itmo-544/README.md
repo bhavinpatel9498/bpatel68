@@ -16,7 +16,7 @@ I am from India. I am currently located at Prairie Shores apartments near IIT.
 
 ## What is your IT interest/specialty
 
-I was working in banking industry as technology analyst for about seven years in India, Nigeria, Thailand and Muscat. The need for me to upgrade my skills and catch up latest trends in IT industry, I decided to pursue masters course at IIT. I am a fullstack developer now.
+I was working in banking industry as technology analyst for about seven years in India, Nigeria, Thailand and Muscat. The need for me to upgrade my skills and catch up latest trends in IT industry forced me to pursue masters course at IIT. I am a fullstack developer now.
 
 ## Something Interesting About You
 
