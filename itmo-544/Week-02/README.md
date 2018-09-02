@@ -1,6 +1,6 @@
 ## Vagrant
 
-| [Vagrant Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg "This is Vagrant Screenshot") | 
+| [Vagrant Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg) | 
 |:--:| 
 | *Vagrant Tutorial Completion* |
 
