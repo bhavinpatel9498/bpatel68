@@ -1,25 +1,19 @@
 ## Vagrant
 
-| [Vagrant Pic][logo] | 
+| [Vagrant Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg "This is Vagrant Screenshot") | 
 |:--:| 
 | *Vagrant Tutorial Completion* |
-
-[logo]: https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg "This is Vagrant Screenshot"
 
 
 ## Packer
 
-| [Packer Pic][logo1] | 
+| [Packer Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic2.jpg "Packer completion screenshot")| 
 |:--:| 
 | *Packer Box Installation Completion* |
-
-[logo1]: https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic2.jpg "Packer completion screenshot"
 
 
 ## Virtual Box
 
-| [VirtualBox Pic][logo2] | 
+| [VirtualBox Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic3.jpg "Box Started Successfully") |
 |:--:| 
 | *Virtual Box Running Screenshot* |
-
-[logo1]: https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic3.jpg "Box Started Successfully"
