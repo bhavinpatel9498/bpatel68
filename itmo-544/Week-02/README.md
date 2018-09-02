@@ -1,23 +1,19 @@
 ## Vagrant
 
-| [Vagrant Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg) | 
-
+| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg" alt="" style="width: 400px;"/> |
+|:--:| 
 | *Vagrant Tutorial Completion* |
 
 
-| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic1.jpg" alt="" style="width: 400px;"/> |
-|:--:| 
-| Vagarnt Tutorial |
-
 ## Packer
 
-| [Packer Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic2.jpg "Packer completion screenshot")| 
+| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic2.jpg" alt="" style="width: 400px;"/> |
 |:--:| 
 | *Packer Box Installation Completion* |
 
 
 ## Virtual Box
 
-| [VirtualBox Pic](https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic3.jpg "Box Started Successfully") |
+| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-02/images/pic3.jpg" alt="" style="width: 400px;"/> |
 |:--:| 
 | *Virtual Box Running Screenshot* |
