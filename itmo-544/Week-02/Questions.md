@@ -2,24 +2,24 @@
 
 1. What is distributed computing?
 
-...Distributed computing is a concept in which single problem is distributed among group of computers or machines which are connected with each other via network (same or different geography). In other words it is a concept by which a task can be divided and distributed among computers to achieve scalability and redundancy.
+   Distributed computing is a concept in which single problem is distributed among group of computers or machines which are connected with each other via network (same or different geography). In other words it is a concept by which a task can be divided and distributed among computers to achieve scalability and redundancy.
 
 2. Describe the three major composition patterns in distributed computing.
 
-..* Load Balancer with Multiple Backend Replicas
-...In this composition request will come to load balancer first. Load balancer then routes requets to one of the backend based on the type of routing configured like round robin, least loaded or slow start. Here all backends are clone of each other in terms of producing results.
+  * Load Balancer with Multiple Backend Replicas
+   In this composition request will come to load balancer first. Load balancer then routes requets to one of the backend based on the type of routing configured like round robin, least loaded or slow start. Here all backends are clone of each other in terms of producing results.
 
-..* Server with Multiple Backends
-...This composition consists of one server with multiple backends. Here the request received by server will be divided into different tasks and each tasks is performed by different backends. Server will combine output of each backend to produce the final response for the request received.
+  * Server with Multiple Backends
+   This composition consists of one server with multiple backends. Here the request received by server will be divided into different tasks and each tasks is performed by different backends. Server will combine output of each backend to produce the final response for the request received.
 
-..* Server Tree
-...A server tree composition consists of root server, parent server and leaf servers in tree fashion with root on top. Root receives the request and forwards to parents and then parents forwards it to leafs. Parents and roots will process results and then send response back.
+  * Server Tree
+   A server tree composition consists of root server, parent server and leaf servers in tree fashion with root on top. Root receives the request and forwards to parents and then parents forwards it to leafs. Parents and roots will process results and then send response back.
 
 3. What are the three patterns discussed for storing state?
 
-..* State kept in one location
-..* State is sharded and replicated
-..* State updates using cached data
+  * State kept in one location
+  * State is sharded and replicated
+  * State updates using cached data
 
 4. Sometimes a master server does not reply with an answer but instead replies with where the answer can be found. What are the benefits of this method?
 
