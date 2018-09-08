@@ -41,10 +41,10 @@
 
    When a system is loosely coupled its components are almost independent of each other and has very little dependency on or knowledge about other components. An ideal system design should consist of N loosely coupled components.
 
-   Loosely coupled systems offer following advantages.
-     * System components can be easily upgraded and enhanced.
-     * Downtime of one component does not impact other components.
-     * If implmentation of one component changes then it does not impact other components.
+   Loosely coupled systems offer following advantages.   
+  * System components can be easily upgraded and enhanced.
+  * Downtime of one component does not impact other components.
+  * If implmentation of one component changes then it does not impact other components.
 
 ### 8. Give examples of loosely and tightly coupled systems you have experience with. What makes them loosely or tightly coupled? (if you haven't worked on any use a system you have seen or used)
 
