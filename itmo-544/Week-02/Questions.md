@@ -48,6 +48,14 @@
 
 ### 8. Give examples of loosely and tightly coupled systems you have experience with. What makes them loosely or tightly coupled? (if you haven't worked on any use a system you have seen or used)
 
+  * Tightly Coupled Systems:
+     I've worked on universal banking solution having systems like CORE banking, Mobile banking, E-banking, Credit Card systems etc. All these systems are tightly coupled with each other. The reason they are tightly coupled is because CORE banking is in the center of the system and other systems intereact throguh or via CORE solution. If CORE solution is down then other systems do not work 100%. Having a dependency on other system makes them tightly coupled.
+
+  * Loosely Coupled Systems:
+     One such loosely coupled system I worked on was CORE system interacting with government regulatory systems for blacklist check. If blacklist system is down it does not impact most of the CORE banking operations and other associated systems. Also government keep updating their data set regularly and CORE banking has nothing to do with it until and unless the way they communicate changes.
+
 ### 9. How do we estimate how fast a system will be able to process a request such as retrieving an email message?
+
+   To estimate how fast the system will be able to process a request we do best estimates using popularized chart and build prototypes. Based on the prototype we would analyze and go back to design phase again until desired speed has been achieved. However prototype can be time consuming so for large systems we split them into small components or steps and estimate how much time each step will take. Disk operations and networks takes most of the time in any operation and we use their estimates using a latest table based on our configuration. This is how we estimate how fast the system will perform.
 
 ### 10. In Section 1.7 three design ideas are presented for how to process email deletion requests. Estimate how long the request will take for deleting an email message for each of the three designs. First outline the steps each would take, then break each one into individual operations until estimates can be created.
