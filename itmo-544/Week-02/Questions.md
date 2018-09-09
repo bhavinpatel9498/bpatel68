@@ -31,7 +31,7 @@
 
 ### 5. Section 1.4 describes a distributed file system, including an example of how reading terabytes of data would work. How would writing terabytes of data work?
 
-   
+   Hadoop framework is used for storing terabytes or petabytes of data.There is a NameNode which interacts with client and other DataNodes which stores the data chunks. Here NameNode stores metadata about cluster and which DataNode contains which file block etc. Also NameNode act as supervisors to decide best way to store and replicate files. DataNodes simply store files or update an existing one.
 
 ### 6. Explain the CAP Principle. (If you think the CAP Principle is awesome, read “The Part-Time Parliament” (Lamport & Marzullo 1998) and “Paxos Made Simple” (Lamport 2001).)
 
@@ -59,3 +59,36 @@
    To estimate how fast the system will be able to process a request we do best estimates using popularized chart and build prototypes. Based on the prototype we would analyze and go back to design phase again until desired speed has been achieved. However prototype can be time consuming so for large systems we split them into small components or steps and estimate how much time each step will take. Disk operations and networks takes most of the time in any operation and we use their estimates using a latest table based on our configuration. This is how we estimate how fast the system will perform.
 
 ### 10. In Section 1.7 three design ideas are presented for how to process email deletion requests. Estimate how long the request will take for deleting an email message for each of the three designs. First outline the steps each would take, then break each one into individual operations until estimates can be created.
+
+  * Design 1: Delete the message from server and delete index.
+     
+     * Client sends delete request to server - 75 ms
+     * Request authentication - 3ms
+     * Delete request in server - 100 ms
+     * Delete index - 30 ms to locate and delete time we can ignore as it will be in ns.
+     * Response back to client - 75 ms
+
+        Total: 283 ms
+
+
+  * Design 2: Delete the index as deleted for a message and later remove index marked as delete to reduce index size.
+
+     * Client sends delete request to server - 75 ms
+     * Request authentication - 3 ms
+     * Delete index - 30 ms to locate and delete time we can ignore as it will be in ns
+     * Response back to client - 75 ms
+
+        Total: 183 ms
+
+  * Design 3: Client send a delete request to server and places a delete request in queue for deleting. Without waiting for queue process to happen client gets a success message about deletion of the message.
+
+     * Client sends delete request to server - 75 ms
+     * Request authentication - 3ms
+     * Request placed in a queue - This time we can ignore as it will be in ns
+     * Response back to client- 75 ms
+
+       Total: 153 ms
+
+
+   Note: All estimates are assuming client is from US and server is in Europe. 
+
