@@ -26,12 +26,12 @@
 
 ### 4. Sometimes a master server does not reply with an answer but instead replies with where the answer can be found. What are the benefits of this method?
   
-  * Files with huge size which cannot fit into one machine can be created and stored.
+  * Huge size files which cannot fit into one machine can be decomposed and stored in different machines.
   * Master server does not become over loaded with receiveing and processing of requests.
 
 ### 5. Section 1.4 describes a distributed file system, including an example of how reading terabytes of data would work. How would writing terabytes of data work?
 
-   Hadoop framework is used for storing terabytes or petabytes of data.There is a NameNode which interacts with client and other DataNodes which stores the data chunks. Here NameNode stores metadata about cluster and which DataNode contains which file block etc. Also NameNode act as supervisors to decide best way to store and replicate files. DataNodes simply store files or update an existing one.
+   Hadoop framework is used for storing terabytes or petabytes of data. There is a NameNode which interacts with client and other DataNodes which stores the data chunks. Here NameNode stores metadata about cluster and which DataNode contains which file block etc. Also NameNode act as supervisors to decide best way to store and replicate files. DataNodes simply store files or update an existing one.
 
 ### 6. Explain the CAP Principle. (If you think the CAP Principle is awesome, read “The Part-Time Parliament” (Lamport & Marzullo 1998) and “Paxos Made Simple” (Lamport 2001).)
 
