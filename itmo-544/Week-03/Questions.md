@@ -3,12 +3,13 @@
 # Solution Week-02 Review Questions
 
 ### 1. Why is design for operations so important?
-       Design for operations is crucial because of following reasons.
-         * BAU activities like support, maintenance and upgrades will be smooth.
-         * In full life cycle of any software or system operations is the biggest cycle. Hence optimal operations design is important.
-         * A good design for operations is cost effective and increases productivity of any organization or team.
-         * System will be more reliable, stable and consistent if designed considering operations features in mind.
-         * Effective operations reflects customer satisfaction or results in pleasure experience for end users.    
+
+   Design for operations is crucial because of following reasons.
+   * BAU activities like support, maintenance and upgrades will be smooth.
+   * In full life cycle of any software or system operations is the biggest cycle. Hence optimal operations design is important.
+   * A good design for operations is cost effective and increases productivity of any organization or team.
+   * System will be more reliable, stable and consistent if designed considering operations features in mind.
+   * Effective operations reflects customer satisfaction or results in pleasure experience for end users.    
     
 
 ### 2. How is automated configuration typically supported?
