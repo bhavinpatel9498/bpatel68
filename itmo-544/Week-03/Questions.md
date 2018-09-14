@@ -1,6 +1,6 @@
 ## Chapter 02 - Designing for Operations
 
-# Solution Week-02 Review Questions
+# Solution Week-03 Review Questions
 
 ### 1. Why is design for operations so important?
 
@@ -29,6 +29,12 @@
    Redundancy   : Duplication of nodes to handle failover situations.
 
    Replication  : Synchronization of data between nodes.
+
+   * Always achieve redundancy throguh load balancer via proper routing and smart mechanism in place to avoid burdening one system.
+   * Analyze and design system in a way that it have minimum impact on features or functionalities because of multiple nodes.
+   * Think of data replication strategy among nodes to avoid any delay in circulating information. e.g. user login status.
+   * Design a system by which nodes can communicate with each other seamless.
+   * Avoid storing repeated and redundant files on all nodes instead store them in master node and use it from there. e.g. cookies or generated reports. 
 
 ### 4. Give an example of a partially implemented process in your current environment. What would you do to fully implement it?
 
