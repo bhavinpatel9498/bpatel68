@@ -7,10 +7,10 @@
    Following table explains the comparison of IaaS, PaaS and SaaS on the basis of cost, configurability and control.
 
    Cloud Type | Cost | Configurability | Control |
-   ---------- | ---- | --------------- | ---- -- |
-   `IaaS`     |      |                 | |
-   `PaaS`     |      |                 | |
-   `SaaS`     |      |                 | |
+   ---------- | ---- | --------------- | ------- |
+   `IaaS`     |      |                 |         |
+   `PaaS`     |      |                 |         |
+   `SaaS`     |      |                 |         |
 
 ### 2. What are the caveats to consider in adopting Software as a Service?
 
