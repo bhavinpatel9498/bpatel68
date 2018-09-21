@@ -6,11 +6,11 @@
 
    Following table explains the comparison of IaaS, PaaS and SaaS on the basis of cost, configurability and control.
 
-   Cloud Type | Cost | Configurability | Control |
+   Cloud Type | Cost | Control | Configurability |
    ---------- | ---- | --------------- | ------- |
-   `IaaS`     |      |                 |         |
-   `PaaS`     |      |                 |         |
-   `SaaS`     |      |                 |         |
+   `IaaS`     | Eliminate cost of setting up infra or data center. You pay for storage, network and usage. Investment required for platform setup and maintenance, application development and maintenance. | Full control of system and data. You can easily add remove hardware as needed. | You can configure full system as per your need and requirements. |
+   `PaaS`     | Along with infra you can lower cost of platform setup, maintenance and patching. It operates on pay-per use. | Provider control your systems and data. You may or may not have full access to system components. | It very limited configurable but not expandable at all.  |
+   `SaaS`     | No infra cost, no platform cost and zero software development or maintenance cost. It is pay-per user. | Absolutely no control of system. Very limited access to system libraries until exposed by provider. | No at all configurable and expandable. You must use what provider provide. Absolutely no scope of configuration until and unless huge business impact for provider. |
 
 ### 2. What are the caveats to consider in adopting Software as a Service?
 
