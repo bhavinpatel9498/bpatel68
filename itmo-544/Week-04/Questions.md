@@ -72,4 +72,4 @@
    * IIT may end up putting too much cost in using full google Apps. E.g. students usually use email and drive while rest of apps may be less useful for students.
    * OTS should take care of training and enabling people to work on google apps internal support.
 
-
+   
