@@ -17,3 +17,4 @@ aws ec2 run-instances --image-id ami-0bbe6b35405ecebdb --count 1 --instance-type
 
 #us-east-2
 #aws ec2 run-instances --image-id ami-0f65671a86f061fcd --count 1 --instance-type t2.micro --key-name bhavin_itmo544_key --security-groups itmo544-default-group-bhavin --user-data "file:///vagrant/week04_bhavin_itmo544_setup.sh" 
+
