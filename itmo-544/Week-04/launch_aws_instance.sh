@@ -3,13 +3,13 @@
 #!/bin/bash
 
 echo "Please provide your github user name. Your details will not be saved:"
-read -p 'Username: ' gituserid
+read -p gituserid
 
 echo "Please provide your github password. Your details will not be saved:"
-read -sp 'Password: ' gitpassword
+read -sp gitpassword
 
 echo "values read success"
 
-sh .create-env.sh "$gituserid" "$gitpassword"
+# sh .create-env.sh "$gituserid" "$gitpassword"
 
 echo "completed"
