@@ -24,4 +24,4 @@
 
 | <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmo-544/Week-04/images/pic3.jpg" alt="" style="width: 400px;"/> |
 |:--:| 
-| *Apache webserver customized page downloaded from * |
+| *Apache webserver customized page downloaded from github* |
