@@ -8,3 +8,4 @@ sudo gem install bundler jekyll
 sudo jekyll new bhavin-awesome-site
 cd bhavin-awesome-site
 sudo bundle exec jekyll serve
+sudo apt-get install links
