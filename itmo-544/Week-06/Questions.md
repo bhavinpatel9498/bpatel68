@@ -43,35 +43,75 @@
 
 ### 5. What is “shared state” and how is it maintained between replicas?
 
+   When an HTTP request is routed to web servers it may generate some content e.g. login authorization cookies on that particular server. Now when there is another request there is a possibility that load balancer may route this to another server and that content is not available. "Shared state" is a strategy by which we can over come above situation. The conent will be generated at a place which is accesible by all web servers. That means no matter where the request was routed the generated information is still available and accesible to all servers.
 
+   Following are few ways you can implement shared state.
+
+   * Make use of database table on database server where every replica has access. This is the easiest approach.
+   * Design the system to hold the data in RAM e.g. Memcached and Redis.
 
 ### 6. What are the services that a four-tier architecture provides in the first tier?
 
+   A four-tier architecture has load balancer in its first tier. It provides following services.
 
+   * Load balancer can handle act as a gateway to receive all requests and route them based on the load balancer configuration to handle requests.
+   * Load balancers provide a flexibility to scale the system as per needed. E.g. if there is a need to have more webserves then they can be easily added and removed.
+   * Load balancers restricts outside systems to access internal systems directly and implement a security.
+   * Load balancers ensure that each request will have a response no matter what. If one web server is down it will route all requests to new server.
+   * Load balancer makes downtime practically nil.
+   * Load balancers can handle better redundancy and system failures. 
 
 ### 7. What does a reverse proxy do? When is it needed?
 
+   Reverse proxy is a type of proxy server which received website requests from client browsers and retrives resources from actual one or more servers combine it and send it back to the browser. The browser feels as if the request was received from a single server but in actual it was sent by reverse proxy server. Indirectly different webservices are clubbed and displayed on a single page as one webservice.
+
+   In following scenarions we may need reverse proxy.
+
+   * When we want to isolate original server and its idendity from outside network.
+   * If there is a need to reduce load on server by caching pages.
+   * Multiple servers can be accessed by single ip address. E.g. more than one server can be access with just one reverse proxy ip.
+   
 
 
 ### 8. Suppose you wanted to build a simple image-sharing web site. How would you design it if the site was intended to serve people in one region of the world? How would you then expand it to work globally?
 
+   I would design it to work it locally in a data center in the region where I intend to server people. By deploying the system in their data center ensures that users find the image sharing web site fast and responsive. Now if I wish to expand it to work is globally the first thing I should do is introduce a global load balancer (GLB). After the GLB I should have data centers in different part of the world. You can either use WAN or Point of presence (PoP) to connect your data centers. A GLB is on top receiving all requests and it routes requets to different data centers based on config like sending the request to nearest data center, nearest available data center or most suitable data center based on matrics. Bringing in a GLB and having multiple data centers in different regions makes a website to work globally.
 
 
 ### 9. What is a message bus architecture and how might one be used?
 
+   Message bus architecture is a many-to-many communication mechanism between servers. It is something like a channel in which one server passes message and all intended servers receives the message. This is better than quering database to get some information which is frequenyly changing. All mordern enterprise applications or web applications use this to interact between servers. It is something like a message distribution system or mechanism.
 
+   Usage: There is a publisher who sends a message to the bus and there is a subscriber or group of subscribers who receives the request. A server can be a publisher or a subscriber depending upon channel it is connected to. There can be many to one, one to many and many to many communication between channels. A server will send real time updates to this channel and all subscribers will receive the same message. E.g. if there is some change in config server, it will push this to channels so that all intended server will receive a notification that there is a change in the config server.
 
 ### 10. What is an SOA?
 
-
+   SOA stands for service oriented architectures. In general terms SOA is dividing a huge system into small systems where each small system provides a feature or service. In SOA verious services communicate with each other via API calls. The benfit of SOA is that large services can be managed more easily.
 
 ### 11. Why are SOAs loosely coupled?
 
+   In SOA all services publish themselves as high level of abstraction. That means one service does not know any internals or implementations about another service. It just know the way to make an API call to that service, sending a request and, expected response from that service. So, in SOA if one service is down it does not impact other services or API calls. Also since internals of services are unknown to each other changing internals or enhancing the service does not impact API calls at all till the time the way service is called remains the same.
 
 
 ### 12. How would you design an email system as an SOA?
 
+   I would design email system as following SOA serices.
+
+   * Send Email Service: Client browser or application can call this service to send an email.
+   * Delete Email Service: If there is a need to delete an email this service will be called.
+   * Retrieve Emails Service: Client application will call this service and receive all latest emails using this service.
+   * Purge Email Service: Old emails will be purged after this service call.
+
+   This is how most email systeme can be designed as a service using SOA.
 
 
 ### 13. Who was Christopher Alexander and what was his contribution to architecture?
+
+   He is a widely influential architect and design theorist, and currently  professor at the UCB. He is considered as father of pattern language movement. Cloud system complexity can be reduced by inspiration from pattern theory. Cloud system design and development was easy with pattern language. In simple terms pattern is something like a common design which everyone follows makes it easy to implement and understand. 
+
+   Sources:
+
+   https://en.wikipedia.org/wiki/Christopher_Alexander
+
+   https://hillside.net/plop/2011/papers/A-20-Fehling.pdf
 
