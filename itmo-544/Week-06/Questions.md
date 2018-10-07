@@ -28,12 +28,22 @@
 
 ### 3. Describe the common web service architectures, in order from smallest to largest.
 
+   Following are common web service architectures.
 
+   * Use of Global Load Balancer: It is a DNS server which routes requests to nearest data center. A GLB analyzes request originator IP address and points it to a data center based on geolocation. A GLB is connected to data centers via internet. It can route traffic based on configured logic in GLB.
+
+   * Data replication across data center: Once the GLB sends requets to data center it interacts directly with the client. Sometime it generates the content on one data center. This may not be availalbe to other data centers if requets route to different data center. To avoid this a GLB can first call a service to find out where the information is and then connect the client to that data center.
+
+   * Use of WAN to connect date centers which is a private network of an organization. Data centers can easily connect with each other using this network.
+
+   * Using PoP: It is a facility used to connect client to ISPs. Lets say there is a user in NY trying to connect to data center in California. Now there is no direct connectivity from client to data center then it will use of PoPs.
+
+   * PoP with GLB: A combination of GLB and PoP is used for full and fast coverage. The request will be routed to nearest frontend using GLB and then if the data is not available it can communicate further using PoPs. This is how most optimal response time is achieved.
 
 
 ### 4. Describe how different local load balancer types work and what their pros and cons are. You may choose to make a comparison chart.
 
-    Following is the comparison chart for local load balancer types.
+   Following is the comparison chart for local load balancer types.
 
    Load Balancer Type | Usage | Pros | Cons |
    ------------------ | ----- | ---- | ---- |
