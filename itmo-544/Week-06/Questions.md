@@ -4,8 +4,7 @@
 
 ### 1. Describe the single-machine, three-tier, and four-tier web application architectures.
 
-   ##### **Single-Machine Architecture:**
-      In this architecture a single machine serves as a web server. This single machine is self sufficient that it uses HTTP protocal, receives input requests, process them and send response back. Web server generates response content through static content source, dynamic content source or database. Usually considerable small applications and small scale websites which does not require heavy processing or does not observe huge load use this architecture. The major advantage of this architecture is that it does not involve huge cost to setup this system. This architecture has few major limitations such as non-availability of disaster recovery system for such architectures, cannot handle heavy computing requests or huge load and its not easily scalable to meet future demands.
+   **Single-Machine Architecture :** In this architecture a single machine serves as a web server. This single machine is self sufficient that it uses HTTP protocal, receives input requests, process them and send response back. Web server generates response content through static content source, dynamic content source or database. Usually considerable small applications and small scale websites which does not require heavy processing or does not observe huge load use this architecture. The major advantage of this architecture is that it does not involve huge cost to setup this system. This architecture has few major limitations such as non-availability of disaster recovery system for such architectures, cannot handle heavy computing requests or huge load and its not easily scalable to meet future demands.
 
 
 ### 2. Describe how a single-machine web server, which uses a database to generate content, might evolve to a three-tier web server. How would this be done with minimal downtime?
