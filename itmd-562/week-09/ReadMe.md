@@ -3,16 +3,16 @@
 | <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmd-562/week-09/images/pic1.jpg" alt="" style="width: 400px;"/> |
 |:--:| 
 | *Running following curl commands* |
-|:--:|
-| *curl localhost:3000/books* |
-|:--:|
-| *curl -X POST -H "Content-Type: application/json" -d "{\"author\":\"Post Author\", \"title\":\"post title\", \"numPages\":100}" localhost:3000/books* |
-|:--:|
-| *curl -X PUT -H "Content-Type: application/json" -d "{\"author\":\"PUT Author\"}" localhost:3000/books/id* |
-|:--:|
-| *curl localhost:3000/books/id* |
-|:--:|
-| *curl -X DELETE localhost:3000/books/id* |
+
+*curl localhost:3000/books*
+
+*curl -X POST -H "Content-Type: application/json" -d "{\"author\":\"Post Author\", \"title\":\"post title\", \"numPages\":100}" localhost:3000/books*
+
+*curl -X PUT -H "Content-Type: application/json" -d "{\"author\":\"PUT Author\"}" localhost:3000/books/id*
+
+*curl localhost:3000/books/id*
+
+*curl -X DELETE localhost:3000/books/id*
 
 
 # npm test O/P
