@@ -1,8 +1,5 @@
 # Run Time O/P
 
-| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmd-562/week-09/images/pic1.jpg" alt="" style="width: 400px;"/> |
-|:--:| 
-| *Running following curl commands* |
 
 *curl localhost:3000/books*
 
@@ -13,6 +10,10 @@
 *curl localhost:3000/books/id*
 
 *curl -X DELETE localhost:3000/books/id*
+
+| <img src="https://github.com/illinoistech-itm/bpatel68/blob/master/itmd-562/week-09/images/pic1.jpg" alt="" style="width: 400px;"/> |
+|:--:| 
+| *Running following curl commands* |
 
 
 # npm test O/P
