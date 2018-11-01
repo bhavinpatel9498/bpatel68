@@ -72,6 +72,50 @@ aws ec2 create-tags --resources $InstanceIdList --tags Key="InstanceOwnerStudent
 
 aws ec2 wait instance-running --instance-ids $InstanceIdList
 
+echo "Instances are running. Creating Load balancer now."
+
+#Create load balancer
+
+aws elb create-load-balancer --load-balancer-name $5 --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --availability-zones us-west-2a us-west-2b us-west-2c
+
+#Creating tags for load balancer
+
+aws elb add-tags --load-balancer-name $5 --tags "Key=InstanceOwnerStudent,Value=A20410380"
+
+echo "Load balancer created. Registering instances now."
+
+
+#Registering instances with load balancer
+
+aws elb register-instances-with-load-balancer --load-balancer-name $5 --instances $InstanceIdList
+
+echo "Instances registered with load balancer."
+
+
+#Configure load balancer security groups
+
+aws elb apply-security-groups-to-load-balancer --load-balancer-name $5 --security-groups $3
+
+echo "Security groups attached with load balancer"
+
+
+#Apply stickiness policy
+
+
+aws elb create-lb-cookie-stickiness-policy --load-balancer-name $5 --policy-name $5-cookie-policy --cookie-expiration-period 60
+
+
+echo "stickiness policy created"
+
+
+#Load balancer on HTTP
+
+aws elb create-load-balancer-listeners --load-balancer-name $5 --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80"
+
+
+aws elb set-load-balancer-policies-of-listener --load-balancer-name $5 --load-balancer-port 80 --policy-names $5-cookie-policy
+
+echo "Listener configured and stickiness policy applied"
 
 
 echo "End of Script"
