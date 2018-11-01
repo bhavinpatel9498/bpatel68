@@ -56,10 +56,22 @@ fi
 
 #aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --user-data "file:///vagrant/week04_bhavin_itmo544_setup.sh"
 
-aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3
+InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --query 'Instances[*].InstanceId' --output text`
 
+echo "Created Instances $InstanceIdList"
 
-#Fetch Instance Ids in a variable
+#Fetch Instance Ids in a variable if required
+
+#aws ec2 describe-instances --filters '[{"Name": "image-id", "Values": ["'$1'"]},{"Name": "instance-state-name","Values": ["pending"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text
+
+#Creating tags for created instances to identify later on
+
+aws ec2 create-tags --resources $InstanceIdList --tags Key="InstanceOwnerStudent",Value="A20410380"
+
+#Wait command to check if instances are running
+
+aws ec2 wait instance-running --instance-ids $InstanceIdList
+
 
 
 echo "End of Script"
