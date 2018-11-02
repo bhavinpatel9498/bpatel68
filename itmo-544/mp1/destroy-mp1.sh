@@ -153,11 +153,11 @@ echo "Volumes Deleted"
 
 echo "Delete S3 Objects"
 
-aws s3api delete-objects --bucket bpatel68-data --delete '{"Objects":[{"Key":"s3image.jpg"}]}'>/dev/null 2>&1
+aws s3api delete-objects --bucket bpatel68-data --delete '{"Objects":[{"Key":"s3image.png"}]}'>/dev/null 2>&1
 
-aws s3api wait object-not-exists --bucket bpatel68-data --key s3image.jpg
+aws s3api wait object-not-exists --bucket bpatel68-data --key s3image.png
 
-echo "Objects deleted."
+echo "Objects deleted"
 echo "Delete S3 Bucket"
 
 aws s3api delete-bucket --bucket bpatel68-data
@@ -172,9 +172,6 @@ aws s3api wait bucket-not-exists --bucket bpatel68-data
 
 echo "S3 Bucket Deleted"
 
-
-
-echo "S3 Bucket Deleted"
 
 echo "End of Destroy Script"
 

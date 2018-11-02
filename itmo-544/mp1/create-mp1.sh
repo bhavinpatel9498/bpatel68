@@ -156,7 +156,7 @@ aws s3api wait bucket-exists --bucket bpatel68-data
 
 echo "Bucket Created"
 
-aws s3api put-object --acl public-read --bucket bpatel68-data --key s3image.jpg --body ./TempRepo/s3image.jpg >/dev/null 2>&1
+aws s3api put-object --acl public-read --bucket bpatel68-data --key s3image.png --body ./TempRepo/s3image.png >/dev/null 2>&1
 
 if [ "$?" -ne "0" ]
 then
@@ -265,7 +265,7 @@ echo "Stickiness policy applied to load balancer."
 
 #Waiting for Success message from Load Balancer
 
-echo "Waiting for instance to come online."
+echo "Waiting for instances to come online."
 
 aws elb wait instance-in-service --load-balancer-name $5 --instances $InstanceIdList
 
