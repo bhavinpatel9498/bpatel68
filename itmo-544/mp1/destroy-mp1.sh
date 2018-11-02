@@ -87,6 +87,49 @@ then
 
 fi
 
+#Deleting EBS Volumes
+
+volumesList=`aws ec2 describe-volumes --filters '[{"Name":"tag:InstanceOwnerStudent","Values":["A20410380"]}, {"Name":"status", "Values":["available", "error", "creating", "in-use"]}]' --query "Volumes[*].VolumeId" --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "End of Script"
+	exit 1;
+fi
+
+echo "Deleting Volumes"
+
+if [ ! -z "$volumesList" ]
+then
+
+	declare -a arrVolumesList=(${volumesList})
+	# get length of an arrVolumesList
+	arrVolumesListLength=${#arrVolumesList[@]}
+	
+	for (( i=1; i<${arrVolumesListLength}+1; i++ ));
+	do
+		aws ec2 delete-volume --volume-id ${arrVolumesList[$i-1]}
+		
+		if [ "$?" -ne "0" ]
+		then
+			echo "End of Script"
+			exit 1;
+		fi	
+	done
+	
+	#Wait while all volumes are deleted
+	
+	aws ec2 volume-deleted --volume-ids $volumesList
+	
+	if [ "$?" -ne "0" ]
+	then
+		echo "End of Script"
+		exit 1;
+	fi	
+	
+fi
+
+echo "Volumes Deleted"
 
 echo "End of Destroy Script"
 

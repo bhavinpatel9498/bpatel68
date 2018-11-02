@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #_=''
 
@@ -66,6 +66,10 @@ fi
 
 echo "Created Instances $InstanceIdList"
 
+declare -a arrInstanceList=(${InstanceIdList})
+# get length of an arrInstanceList
+arrInstanceListLength=${#arrInstanceList[@]}
+
 #Fetch Instance Ids in a variable if required
 
 #aws ec2 describe-instances --filters '[{"Name": "image-id", "Values": ["'$1'"]},{"Name": "instance-state-name","Values": ["pending"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text
@@ -92,6 +96,44 @@ then
 	echo "End of Script"
 	exit 1;
 fi
+
+#Creating EBS Volumes
+
+echo "Creating Volumnes"
+
+for (( i=1; i<${arrInstanceListLength}+1; i++ ));
+do
+  echo "Creating and attaching Volume for Instance ID ${arrInstanceList[$i-1]}"
+  
+  volumeId=`aws ec2 create-volume --availability-zone us-west-2b --size 10 --tag-specifications 'ResourceType=volume, Tags=[{Key=InstanceOwnerStudent,Value=A20410380}]' --query 'VolumeId' --output text`
+  
+  if [ "$?" -ne "0" ]
+  then
+	echo "End of Script"
+	exit 1;
+  fi
+  
+  aws ec2 wait volume-available --volume-ids $volumeId
+  
+  if [ "$?" -ne "0" ]
+  then
+	echo "End of Script"
+	exit 1;
+  fi
+  
+  aws ec2 attach-volume --volume-id $volumeId --instance-id ${arrInstanceList[$i-1]} --device /dev/xvdh  
+  
+  if [ "$?" -ne "0" ]
+  then
+	echo "End of Script"
+	exit 1;
+  fi
+  
+  echo "Volume Created and attached for Instance ID ${arrInstanceList[$i-1]}"
+  
+  #echo $i " / " ${arrInstanceListLength} " : " ${arrInstanceList[$i-1]}
+done
+
 
 echo "Instances are running. Waiting for System status ok and Instance status ok."
 
