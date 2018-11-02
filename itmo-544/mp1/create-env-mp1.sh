@@ -8,3 +8,7 @@ sudo apt-get install git -y
 
 echo "=========== Installing Apache ==========="
 sudo apt-get install apache2 -y
+
+echo "=========== Installing Apache ==========="
+sudo apt-get install apache2 -y
+

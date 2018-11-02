@@ -135,6 +135,42 @@ do
 done
 
 
+
+#Creating S3 bucket-name
+
+echo "Creating S3 bucket"
+
+aws s3api create-bucket --bucket bpatel68-data --acl public-read --region us-west-2 --create-bucket-configuration LocationConstraint=us-west-2
+
+if [ "$?" -ne "0" ]
+then
+	echo "End of Script"
+	exit 1;
+fi
+
+sudo mkdir bhavin_temp
+cd bhavin_temp
+sudo git clone https://github.com/bhavinpatel9498/TempRepo>/dev/null 2>&1
+
+aws s3api wait bucket-exists --bucket bpatel68-data
+
+echo "Bucket Created"
+
+aws s3api put-object --acl public-read --bucket bpatel68-data --key s3image.jpg --body ./TempRepo/s3image.jpg >/dev/null 2>&1
+
+if [ "$?" -ne "0" ]
+then
+	echo "End of Script"
+	exit 1;
+fi
+
+echo "Object Created in bucket"
+
+cd ..
+
+sudo rm -rf bhavin_temp
+
+
 echo "Instances are running. Waiting for System status ok and Instance status ok."
 
 
