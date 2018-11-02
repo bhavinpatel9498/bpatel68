@@ -66,10 +66,22 @@ then
 		exit 1;
 	fi
 	
+	echo "Waiting for Instances to terminate"
+	
+	aws ec2 wait instance-terminated --instance-ids $InstanceIdList
+	
 	echo "All Instances Terminated"
+	
 fi
 
-AllInstanceIdList=`aws ec2 describe-instances --filters '[{"Name": "instance-state-name","Values": ["pending", "running", "stopped", "stopping"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text`
+AllInstanceIdList=`aws ec2 describe-instances --filters '[{"Name": "instance-state-name","Values": ["pending", "running", "stopped"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "End of Script"
+	exit 1;
+fi
+
 
 if [ ! -z "$AllInstanceIdList" ]
 then
@@ -83,13 +95,17 @@ then
 		exit 1;
 	fi	
 	
+	echo "Waiting for Instances to terminate"
+	
+	aws ec2 wait instance-terminated --instance-ids $AllInstanceIdList
+	
 	echo "All other Instances Terminated"
 
 fi
 
 #Deleting EBS Volumes
 
-volumesList=`aws ec2 describe-volumes --filters '[{"Name":"tag:InstanceOwnerStudent","Values":["A20410380"]}, {"Name":"status", "Values":["available", "error", "creating", "in-use"]}]' --query "Volumes[*].VolumeId" --output text`
+volumesList=`aws ec2 describe-volumes --filters '[{"Name":"tag:InstanceOwnerStudent","Values":["A20410380"]}, {"Name":"status", "Values":["available", "error", "creating"]}]' --query "Volumes[*].VolumeId" --output text`
 
 if [ "$?" -ne "0" ]
 then
@@ -105,9 +121,10 @@ then
 	declare -a arrVolumesList=(${volumesList})
 	# get length of an arrVolumesList
 	arrVolumesListLength=${#arrVolumesList[@]}
+
 	
 	for (( i=1; i<${arrVolumesListLength}+1; i++ ));
-	do
+	do		
 		aws ec2 delete-volume --volume-id ${arrVolumesList[$i-1]}
 		
 		if [ "$?" -ne "0" ]
@@ -119,7 +136,7 @@ then
 	
 	#Wait while all volumes are deleted
 	
-	aws ec2 volume-deleted --volume-ids $volumesList
+	aws ec2 wait volume-deleted --volume-ids $volumesList
 	
 	if [ "$?" -ne "0" ]
 	then
