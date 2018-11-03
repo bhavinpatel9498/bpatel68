@@ -12,13 +12,13 @@ InstanceIdList=`aws elb describe-load-balancers --load-balancer-name $1 --query 
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "$InstanceIdList"
 
-
+############
 
 #Deregister Load Balancers instances
 
@@ -29,13 +29,15 @@ then
 	
 	if [ "$?" -ne "0" ]
 	then
-		echo "End of Script"
+		echo "Terminate Script"
 		exit 1;
 	fi
 	
 	echo "Instances deregistered"
 	
 fi
+
+############
 
 #Delete Load balancer
 
@@ -44,15 +46,16 @@ aws elb delete-load-balancer --load-balancer-name $1
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "Load balancer deleted"
 
 
-#Delete Instances now
+############
 
+#Delete Instances now
 
 
 if [ ! -z "$InstanceIdList" ]
@@ -62,7 +65,7 @@ then
 	
 	if [ "$?" -ne "0" ]
 	then
-		echo "End of Script"
+		echo "Terminate Script"
 		exit 1;
 	fi
 	
@@ -74,11 +77,13 @@ then
 	
 fi
 
+############
+
 AllInstanceIdList=`aws ec2 describe-instances --filters '[{"Name": "instance-state-name","Values": ["pending", "running", "stopped"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text`
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -91,7 +96,7 @@ then
 	
 	if [ "$?" -ne "0" ]
 	then
-		echo "End of Script"
+		echo "Terminate Script"
 		exit 1;
 	fi	
 	
@@ -103,13 +108,15 @@ then
 
 fi
 
+############
+
 #Deleting EBS Volumes
 
 volumesList=`aws ec2 describe-volumes --filters '[{"Name":"tag:InstanceOwnerStudent","Values":["A20410380"]}, {"Name":"status", "Values":["available", "error", "creating"]}]' --query "Volumes[*].VolumeId" --output text`
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -129,7 +136,7 @@ then
 		
 		if [ "$?" -ne "0" ]
 		then
-			echo "End of Script"
+			echo "Terminate Script"
 			exit 1;
 		fi	
 	done
@@ -140,7 +147,7 @@ then
 	
 	if [ "$?" -ne "0" ]
 	then
-		echo "End of Script"
+		echo "Terminate Script"
 		exit 1;
 	fi	
 	
@@ -148,29 +155,79 @@ fi
 
 echo "Volumes Deleted"
 
+############
 
 #Delete S3 Bucket
 
-echo "Delete S3 Objects"
+echo "Delete S3 Buckets"
 
-aws s3api delete-objects --bucket bpatel68-data --delete '{"Objects":[{"Key":"s3image.png"}]}'>/dev/null 2>&1
-
-aws s3api wait object-not-exists --bucket bpatel68-data --key s3image.png
-
-echo "Objects deleted"
-echo "Delete S3 Bucket"
-
-aws s3api delete-bucket --bucket bpatel68-data
+bucketList=`aws s3api list-buckets --query "Buckets[].Name" --output text`
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
-aws s3api wait bucket-not-exists --bucket bpatel68-data
+if [ ! -z "$bucketList" ]
+then
 
-echo "S3 Bucket Deleted"
+	declare -a arrBucketList=(${bucketList})
+	# get length of an arrVolumesList
+	arrBucketListLength=${#arrBucketList[@]}
+
+	#Getting Buckets
+	for (( i=1; i<${arrBucketListLength}+1; i++ ));
+	do		
+		
+		echo "Deleting objects for bucket ${arrBucketList[$i-1]}"
+		
+		objectList=`aws s3api list-objects-v2 --bucket ${arrBucketList[$i-1]} --query 'Contents[].Key' --output text`
+		
+		if [ "$?" -ne "0" ]
+		then
+			echo "Terminate Script"
+			exit 1;
+		fi	
+		
+		if [ ! -z "$objectList" ]
+		then
+			declare -a arrObjectList=(${objectList})
+			# get length of an arrVolumesList
+			arrObjectListLength=${#arrObjectList[@]}
+			
+			for (( j=1; j<${arrObjectListLength}+1; j++ ));
+			do	
+				#aws s3api delete-objects --bucket ${arrBucketList[$i-1]} --delete '{"Objects":[{"Key":"${arrObjectList[$j-1]}"}]}'>/dev/null 2>&1
+				
+				aws s3api delete-object --bucket ${arrBucketList[$i-1]} --key ${arrObjectList[$j-1]}>/dev/null 2>&1
+				
+				aws s3api wait object-not-exists --bucket ${arrBucketList[$i-1]} --key ${arrObjectList[$j-1]}
+			
+			done		
+		fi
+		
+		echo "Objects Deleted"
+		
+		echo "Delete Bucket ${arrBucketList[$i-1]}"		
+		
+		aws s3api delete-bucket --bucket ${arrBucketList[$i-1]}
+
+		if [ "$?" -ne "0" ]
+		then
+			echo "Terminate Script"
+			exit 1;
+		fi
+
+		aws s3api wait bucket-not-exists --bucket ${arrBucketList[$i-1]}
+
+		echo "Bucket Deleted"	
+		
+	done
+
+fi
+
+############
 
 
 echo "End of Destroy Script"

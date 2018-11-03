@@ -51,6 +51,7 @@ then
 	exit 1
 fi
 
+############
 
 #Create EC2 Instance
 
@@ -60,7 +61,7 @@ InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -74,13 +75,16 @@ arrInstanceListLength=${#arrInstanceList[@]}
 
 #aws ec2 describe-instances --filters '[{"Name": "image-id", "Values": ["'$1'"]},{"Name": "instance-state-name","Values": ["pending"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text
 
+############
+
+
 #Creating tags for created instances to identify later on
 
 aws ec2 create-tags --resources $InstanceIdList --tags Key="InstanceOwnerStudent",Value="A20410380"
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -93,9 +97,11 @@ aws ec2 wait instance-running --instance-ids $InstanceIdList
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
+
+############
 
 #Creating EBS Volumes
 
@@ -109,7 +115,7 @@ do
   
   if [ "$?" -ne "0" ]
   then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
   fi
   
@@ -117,7 +123,7 @@ do
   
   if [ "$?" -ne "0" ]
   then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
   fi
   
@@ -125,51 +131,15 @@ do
   
   if [ "$?" -ne "0" ]
   then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
   fi
   
   echo "Volume Created and attached for Instance ID ${arrInstanceList[$i-1]}"
   
-  #echo $i " / " ${arrInstanceListLength} " : " ${arrInstanceList[$i-1]}
 done
 
-
-
-#Creating S3 bucket-name
-
-echo "Creating S3 bucket"
-
-aws s3api create-bucket --bucket bpatel68-data --acl public-read --region us-west-2 --create-bucket-configuration LocationConstraint=us-west-2
-
-if [ "$?" -ne "0" ]
-then
-	echo "End of Script"
-	exit 1;
-fi
-
-sudo mkdir bhavin_temp
-cd bhavin_temp
-sudo git clone https://github.com/bhavinpatel9498/TempRepo>/dev/null 2>&1
-
-aws s3api wait bucket-exists --bucket bpatel68-data
-
-echo "Bucket Created"
-
-aws s3api put-object --acl public-read --bucket bpatel68-data --key s3image.png --body ./TempRepo/s3image.png >/dev/null 2>&1
-
-if [ "$?" -ne "0" ]
-then
-	echo "End of Script"
-	exit 1;
-fi
-
-echo "Object Created in bucket"
-
-cd ..
-
-sudo rm -rf bhavin_temp
-
+############
 
 echo "Instances are running. Waiting for System status ok and Instance status ok."
 
@@ -185,6 +155,9 @@ aws ec2 wait instance-status-ok --instance-ids $InstanceIdList
 echo "Instance status ok"
 
 
+############
+
+
 echo "Creating Load balancer now."
 
 #Create load balancer
@@ -193,7 +166,7 @@ groupid=`aws ec2 describe-security-groups --group-names $3 --query "SecurityGrou
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -204,9 +177,12 @@ loadBalUrl=`aws elb create-load-balancer --load-balancer-name $5 --listeners "Pr
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
+
+############
+
 
 #Creating tags for load balancer
 
@@ -214,7 +190,7 @@ aws elb add-tags --load-balancer-name $5 --tags "Key=InstanceOwnerStudent,Value=
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
@@ -223,18 +199,21 @@ echo "Load balancer created. Registering instances now."
 
 #aws elb configure-health-check --load-balancer-name $5 --health-check Target=TCP:80,Interval=30,UnhealthyThreshold=10,HealthyThreshold=10,Timeout=5
 
+############
+
 #Registering instances with load balancer
 
 aws elb register-instances-with-load-balancer --load-balancer-name $5 --instances $InstanceIdList
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "Instances registered with load balancer."
 
+############
 
 #Create stickiness policy
 
@@ -243,12 +222,13 @@ aws elb create-lb-cookie-stickiness-policy --load-balancer-name $5 --policy-name
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "stickiness policy created"
 
+############
 
 #Apply stickiness policy
 
@@ -256,26 +236,63 @@ aws elb set-load-balancer-policies-of-listener --load-balancer-name $5 --load-ba
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "Stickiness policy applied to load balancer."
 
+############
+
+#Creating S3 bucket-name
+
+echo "Creating S3 bucket"
+
+aws s3api create-bucket --bucket $6 --acl public-read --region us-west-2 --create-bucket-configuration LocationConstraint=us-west-2
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+sudo mkdir bhavin_temp
+cd bhavin_temp
+sudo git clone https://github.com/bhavinpatel9498/TempRepo>/dev/null 2>&1
+
+aws s3api wait bucket-exists --bucket $6
+
+echo "Bucket Created"
+
+aws s3api put-object --acl public-read --bucket $6 --key s3image.png --body ./TempRepo/s3image.png >/dev/null 2>&1
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "Object Created in bucket"
+
+cd ..
+
+sudo rm -rf bhavin_temp
+
+############
 
 #Waiting for Success message from Load Balancer
 
-echo "Waiting for instances to come online."
+echo "Waiting for instances to be in service."
 
 aws elb wait instance-in-service --load-balancer-name $5 --instances $InstanceIdList
 
 if [ "$?" -ne "0" ]
 then
-	echo "End of Script"
+	echo "Terminate Script"
 	exit 1;
 fi
 
 echo "Load Balancer is Up now. Please use below URL."
 echo $loadBalUrl
 
-echo "End of Script"
+echo "End of Create Script"
