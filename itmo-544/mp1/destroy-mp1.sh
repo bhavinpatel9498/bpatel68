@@ -147,10 +147,11 @@ then
 	exit 1;
 fi
 
-echo "Deleting Volumes"
 
 if [ ! -z "$volumesList" ]
 then
+
+	echo "Deleting Volumes"
 
 	declare -a arrVolumesList=(${volumesList})
 	# get length of an arrVolumesList
@@ -178,15 +179,20 @@ then
 		exit 1;
 	fi	
 	
+	echo "Volumes Deleted"
+	
+else
+
+	echo "No volumes to delete"
+	
 fi
 
-echo "Volumes Deleted"
+
 
 ############
 
 #Delete S3 Bucket
 
-echo "Delete S3 Buckets"
 
 bucketList=`aws s3api list-buckets --query "Buckets[].Name" --output text`
 
@@ -198,6 +204,8 @@ fi
 
 if [ ! -z "$bucketList" ]
 then
+
+	echo "Delete S3 Buckets"
 
 	declare -a arrBucketList=(${bucketList})
 	# get length of an arrVolumesList
@@ -252,6 +260,10 @@ then
 		
 	done
 
+else
+
+	echo "No buckets to delete"
+	
 fi
 
 ############
