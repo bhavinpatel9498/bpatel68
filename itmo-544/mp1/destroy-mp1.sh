@@ -1,14 +1,6 @@
 #!/bin/bash
 
-if [ -z $1 ]
-then
-	echo "Provide Load Balancer Name"
-	exit 1
-fi
-
-#Getting Load balancer instances
-
-InstanceIdList=`aws elb describe-load-balancers --load-balancer-name $1 --query 'LoadBalancerDescriptions[*].Instances' --output text`
+loadBalancerList=`aws elb describe-load-balancers --query 'LoadBalancerDescriptions[*].LoadBalancerName' --output text`
 
 if [ "$?" -ne "0" ]
 then
@@ -16,67 +8,98 @@ then
 	exit 1;
 fi
 
-echo "$InstanceIdList"
-
-############
-
-#Deregister Load Balancers instances
-
-if [ ! -z "$InstanceIdList" ]
+if [ ! -z "$loadBalancerList" ]
 then
-	echo "Deregister instances from load balancer"
-	aws elb deregister-instances-from-load-balancer --load-balancer-name $1 --instances $InstanceIdList
+
+	declare -a arrLoadBalancerList=(${loadBalancerList})
+	# get length of an arrLoadBalancerList
+	arrLoadBalancerListLength=${#arrLoadBalancerList[@]}
 	
-	if [ "$?" -ne "0" ]
-	then
-		echo "Terminate Script"
-		exit 1;
-	fi
+	for (( i=1; i<${arrLoadBalancerListLength}+1; i++ ));
+	do	
+
+		#Getting Load balancer instances
+
+		InstanceIdList=`aws elb describe-load-balancers --load-balancer-name ${arrLoadBalancerList[$i-1]} --query 'LoadBalancerDescriptions[*].Instances' --output text`
+
+		if [ "$?" -ne "0" ]
+		then
+			echo "Terminate Script"
+			exit 1;
+		fi
+
+		echo "$InstanceIdList"
+
+		############
+
+		#Deregister Load Balancers instances
+
+		if [ ! -z "$InstanceIdList" ]
+		then
+			echo "Deregister instances from load balancer"
+			aws elb deregister-instances-from-load-balancer --load-balancer-name ${arrLoadBalancerList[$i-1]} --instances $InstanceIdList
+			
+			if [ "$?" -ne "0" ]
+			then
+				echo "Terminate Script"
+				exit 1;
+			fi
+			
+			echo "Instances deregistered"
+			
+		fi
+
+		############
+
+		#Delete Load balancer
+
+		echo "Delete load balancer"
+		aws elb delete-load-balancer --load-balancer-name ${arrLoadBalancerList[$i-1]}
+
+		if [ "$?" -ne "0" ]
+		then
+			echo "Terminate Script"
+			exit 1;
+		fi
+
+		echo "Load balancer deleted"
+
+
+		############
+
+		#Delete Instances now
+
+
+		if [ ! -z "$InstanceIdList" ]
+		then
+			echo "Terminating all instance."
+			aws ec2 terminate-instances --instance-ids $InstanceIdList
+			
+			if [ "$?" -ne "0" ]
+			then
+				echo "Terminate Script"
+				exit 1;
+			fi
+			
+			echo "Waiting for Instances to terminate"
+			
+			aws ec2 wait instance-terminated --instance-ids $InstanceIdList
+			
+			echo "All Instances Terminated"
+		
+		else
+			
+			echo "No instances to delete for Load balancer ${arrLoadBalancerList[$i-1]}"
+			
+		fi
 	
-	echo "Instances deregistered"
+	done
+
+else
 	
+	echo "No Load Balancer to Delete"
+
 fi
-
-############
-
-#Delete Load balancer
-
-echo "Delete load balancer"
-aws elb delete-load-balancer --load-balancer-name $1
-
-if [ "$?" -ne "0" ]
-then
-	echo "Terminate Script"
-	exit 1;
-fi
-
-echo "Load balancer deleted"
-
-
-############
-
-#Delete Instances now
-
-
-if [ ! -z "$InstanceIdList" ]
-then
-	echo "Terminating all instance."
-	aws ec2 terminate-instances --instance-ids $InstanceIdList
-	
-	if [ "$?" -ne "0" ]
-	then
-		echo "Terminate Script"
-		exit 1;
-	fi
-	
-	echo "Waiting for Instances to terminate"
-	
-	aws ec2 wait instance-terminated --instance-ids $InstanceIdList
-	
-	echo "All Instances Terminated"
-	
-fi
-
 ############
 
 AllInstanceIdList=`aws ec2 describe-instances --filters '[{"Name": "instance-state-name","Values": ["pending", "running", "stopped"] }]' --query 'Reservations[*].Instances[*].InstanceId' --output text`
@@ -105,6 +128,10 @@ then
 	aws ec2 wait instance-terminated --instance-ids $AllInstanceIdList
 	
 	echo "All other Instances Terminated"
+	
+else
+
+	echo "No Extra Instances running"
 
 fi
 
