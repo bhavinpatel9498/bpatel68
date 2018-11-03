@@ -47,4 +47,9 @@
 | *Sample O/P of destroy script* |
 
 
-### Assumptions
+### Assumptions and Additional Notes
+
+   * Execution is sequential for all scripts. If some command fails it will display error and terminate execution of script from that point without executing further commands.
+   * Destroy script is assuming to delete everything leaving your AWS a clean slate. Only exception to this is EBS volumes where I am just removing volumes having tags with key "InstanceOwnerStudent" having value "A20410380".
+   * There are wait commands in create and destroy scripts. If by any chance wait commands fails script execution will terminate with status code 255. You have to execute entire script again.
+   * When formatting additional EBS in instance initialization script the time out is 10 minutes. So, if volume is not attached to the instance within 10 min. It will not be mounted.
