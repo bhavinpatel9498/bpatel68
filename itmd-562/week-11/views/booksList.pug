@@ -1,0 +1,40 @@
+doctype html
+html(lang='en')
+  head
+    title Book List
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-success
+        .panel-heading(style='height: 150px;')
+          h2 Books List
+          button#addBookBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;') Add Book
+        .panel-body
+          table.table.table-striped
+            thead
+              tr
+                th(width='40%') Book Title
+                th(width='30%') Author
+                th(width='30%') Number of Pages
+            tbody
+                each book in booksList
+                  tr
+                    td(class='h3')
+                      a(href='/books/update/' + book._id)= book.title
+                    td= book.author
+                    td= book.numPages
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+        $('#addBookBtn').bind("click",function(){
+          //window.location.href = window.location.hostname+"/books";
+          window.location.href = "/books/add";
+        });
+
+
+      });
