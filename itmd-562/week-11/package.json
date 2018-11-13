@@ -1,18 +1,15 @@
 {
-  "name": "week9",
+  "name": "week11",
   "version": "1.0.0",
-  "description": "week-09 assignment",
+  "description": "week-11 assignment",
   "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Bhavinkumar",
   "license": "ISC",
   "dependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.2.0",
     "express": "^4.16.4",
-    "mocha": "^5.2.0",
     "mongodb": "^3.1.8",
     "mongoose": "^5.3.6",
     "pug": "^2.0.3"
