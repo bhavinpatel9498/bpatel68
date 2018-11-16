@@ -64,7 +64,7 @@ then
 	exit 1;
 fi
 
-aws rds create-db-instance --allocated-storage 5 --db-instance-class db.t2.micro --db-instance-identifier bhavin-mp2-db --engine mysql --master-username dbuser --master-user-password dbpassword --availability-zone us-west-2b --vpc-security-group-ids $groupid
+temprdsval=`aws rds create-db-instance --allocated-storage 5 --backup-retention-period 0 --db-instance-class db.t2.micro --db-instance-identifier bhavin-mp2-db --engine mysql --master-username dbuser --master-user-password dbpassword --availability-zone us-west-2b --vpc-security-group-ids $groupid`
 
 if [ "$?" -ne "0" ]
 then
@@ -140,7 +140,7 @@ aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 3
 
 #InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --query 'Instances[*].InstanceId' --output text`
 
-InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2.sh" --query 'Instances[*].InstanceId' --output text` 
+InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2.sh" --query 'Instances[*].InstanceId' --output text` 
 
 if [ "$?" -ne "0" ]
 then
@@ -210,7 +210,7 @@ do
 	exit 1;
   fi
   
-  aws ec2 attach-volume --volume-id $volumeId --instance-id ${arrInstanceList[$i-1]} --device /dev/xvdh  
+  tempebsval=`aws ec2 attach-volume --volume-id $volumeId --instance-id ${arrInstanceList[$i-1]} --device /dev/xvdh`  
   
   if [ "$?" -ne "0" ]
   then
@@ -242,7 +242,7 @@ echo "Instance status ok"
 
 #Creating standalone instance for job processing
 
-jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2-standalone.sh" --query 'Instances[*].InstanceId' --output text`
+jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2-standalone.sh" --query 'Instances[*].InstanceId' --output text`
 
 if [ "$?" -ne "0" ]
 then

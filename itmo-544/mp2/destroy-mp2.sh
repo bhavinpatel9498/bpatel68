@@ -73,7 +73,7 @@ then
 		if [ ! -z "$InstanceIdList" ]
 		then
 			echo "Terminating all instance."
-			aws ec2 terminate-instances --instance-ids $InstanceIdList
+			temploadbalinstance=`aws ec2 terminate-instances --instance-ids $InstanceIdList`
 			
 			if [ "$?" -ne "0" ]
 			then
@@ -115,7 +115,7 @@ if [ ! -z "$AllInstanceIdList" ]
 then
 	echo "Terminating other running instances"
 	
-	aws ec2 terminate-instances --instance-ids $AllInstanceIdList
+	tempotherinstances=`aws ec2 terminate-instances --instance-ids $AllInstanceIdList`
 	
 	if [ "$?" -ne "0" ]
 	then
@@ -380,7 +380,7 @@ fi
 
 #Delete RDS
 
-rdsval=`aws rds describe-db-instances --db-instance-identifier bhavin-mp2-db >/dev/null 2>&1`
+rdsval=`aws rds describe-db-instances --db-instance-identifier bhavin-mp2-db`
 
 if [ "$?" -ne "0" ]
 then
