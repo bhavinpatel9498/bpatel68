@@ -51,13 +51,77 @@ then
 	exit 1
 fi
 
+
 ############
+
+echo "creating RDS"
+
+
+aws rds create-db-instance --allocated-storage 5 --db-instance-class db.t2.micro --db-instance-identifier bhavin-mp2-db --engine mysql --master-username dbuser --master-user-password dbpassword --availability-zone us-west-2b --vpc-security-group-ids $groupid
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "Waiting for RDS to be available"
+
+aws rds wait db-instance-available --db-instance-identifier bhavin-mp2-db
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+rdsDBAddress=`aws rds describe-db-instances --db-instance-identifier bhavin-mp2-db --filters '[{"Name": "db-instance-id","Values": ["bhavin-mp2-db"]}]' --query "DBInstances[*].Endpoint.Address" --output text`
+
+
+echo $rdsDBAddress
+
+echo "RDS created"
+
+
+############
+
+#Creating SQS
+
+echo "Creating SQS"
+
+queueName=`aws sqs create-queue --queue-name bpatel68-sqs-mp2-msg --query 'QueueUrl' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "SQS Created"
+
+############
+
+#Creating S3 bucket-name
+
+echo "Creating S3 bucket"
+
+aws s3api create-bucket --bucket $6 --acl public-read --region us-west-2 --create-bucket-configuration LocationConstraint=us-west-2
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+aws s3api wait bucket-exists --bucket $6
+
+echo "Bucket Created"
 
 #Create EC2 Instance
 
 #InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --query 'Instances[*].InstanceId' --output text`
 
-InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp1.sh" --query 'Instances[*].InstanceId' --output text` 
+InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2.sh" --query 'Instances[*].InstanceId' --output text` 
 
 if [ "$?" -ne "0" ]
 then
@@ -181,6 +245,14 @@ then
 	exit 1;
 fi
 
+aws elb create-load-balancer-listeners --load-balancer-name $5 --listeners "Protocol=TCP,LoadBalancerPort=3000,InstanceProtocol=TCP,InstancePort=3000"
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
 ############
 
 
@@ -242,41 +314,6 @@ fi
 
 echo "Stickiness policy applied to load balancer."
 
-############
-
-#Creating S3 bucket-name
-
-echo "Creating S3 bucket"
-
-aws s3api create-bucket --bucket $6 --acl public-read --region us-west-2 --create-bucket-configuration LocationConstraint=us-west-2
-
-if [ "$?" -ne "0" ]
-then
-	echo "Terminate Script"
-	exit 1;
-fi
-
-sudo mkdir bhavin_temp
-cd bhavin_temp
-sudo git clone https://github.com/bhavinpatel9498/TempRepo>/dev/null 2>&1
-
-aws s3api wait bucket-exists --bucket $6
-
-echo "Bucket Created"
-
-aws s3api put-object --acl public-read --bucket $6 --key s3image.png --body ./TempRepo/s3image.png >/dev/null 2>&1
-
-if [ "$?" -ne "0" ]
-then
-	echo "Terminate Script"
-	exit 1;
-fi
-
-echo "Object Created in bucket"
-
-cd ..
-
-sudo rm -rf bhavin_temp
 
 ############
 
@@ -293,6 +330,6 @@ then
 fi
 
 echo "Load Balancer is Up now. Please use below URL."
-echo $loadBalUrl
+echo $loadBalUrl":3000/messages"
 
 echo "End of Create Script"

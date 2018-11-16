@@ -1,0 +1,80 @@
+doctype html
+html(lang='en')
+  head
+    title Message Form
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-primary
+        .panel-heading(style='height: 100px;')
+          h2 Message Details
+        .panel-body
+          form#dataForm(method='POST')
+            .form-group(style='width: 30%')
+              label(for='messageuuid') Message UUID
+              input#messageuuid.form-control(type='text', name='messageuuid', readonly='', value= msguuid)
+            .form-group(style='width: 30%')
+              label(for='username') User Name
+              input#username.form-control(type='text', name='username')
+            .form-group(style='width: 30%')
+              label(for='email') Email ID
+              input#email.form-control(type='text', name='email', value='bpatel68@hawk.iit.edu')
+            .form-group(style='width: 30%')
+              label(for='phone') Phone No
+              input#phone.form-control(type='text', name='phone', value='13124091731')
+            .form-group(style='width: 30%')
+              label(for='inputmessage') Input Message
+              textarea#inputmessage.form-control(rows='5', name='inputmessage')
+          button#homeBtn.btn.btn-success(type='button', style='margin: 10px') Home Page
+          button#saveBtn.btn.btn-warning(type='button', style='margin: 10px') Save Details
+                    
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(type='text/javascript', src='http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js')
+
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+     
+      $('#homeBtn').bind("click",function(){
+          window.location.href = "/messages";
+      });
+
+      $('#dataForm').validate({ // initialize the plugin
+        rules: 
+        {
+            messageuuid: {
+                required: true,
+                minlength: 1
+            },
+            username: {
+                required: true,
+                minlength: 1
+            },
+            email: {
+                required: true,
+                minlength: 1                
+            },
+            phone: {
+                required: true,
+                minlength: 1,
+                number: true                
+            },
+            inputmessage: {
+                required: true,
+                minlength: 1                
+            }
+        }
+       });
+
+
+      $('#saveBtn').bind("click",function(){
+
+      console.log('submit clicked');
+      $('#dataForm').submit();
+
+      });//save btn
+     
+      });

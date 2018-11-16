@@ -1,0 +1,40 @@
+doctype html
+html(lang='en')
+  head
+    title Message Details
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-primary
+        .panel-heading(style='height: 100px;')
+          h2 Message Details
+        .panel-body
+
+        each message in messageResult
+          message
+          h3 Message UUID
+          p= message.messageuuid 
+          h3 User Name
+          p= message.username
+          h3 Notification Details
+          p= message.email
+          p= message.phone
+          h3 Original Text
+          p= message.s3urlraw
+          h3 Converted Text
+          p= message.s3urlprocessed
+    
+          br
+          button#homeBtn.btn.btn-success(type='button') Home Page
+          br
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+      $('#homeBtn').bind("click",function(){
+      window.location.href = "/messages";
+      });
+      });

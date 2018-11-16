@@ -1,40 +1,25 @@
 #!/bin/bash
 ## This file is used to initialize launched AWS instance
-echo "========== Installing Updates ==========="
-sudo apt-get update
-
-echo "========== Installing GIT ==========="
-sudo apt-get install git -y
-
-echo "=========== Installing Apache ==========="
-sudo apt-get install apache2 -y
-
-#####################
-#Installing Node JS
-
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.0/install.sh | bash
-
-. ~/.nvm/nvm.sh
-
-nvm install 5.5.1
-
-node -e "console.log('Running Node.js ' + process.version)"
-
-
-
+#Image created with git, apache, node pre installed
+#sudo apt-get update
+#sudo apt-get install git -y
+#sudo apt-get install apache2 -y
 
 #####################
 
-#Deploy file from github
-cd /var/www/html
-
-sudo mv index.html index.html_bck_original
+cd /home/ubuntu
 
 sudo git clone git@github.com:illinoistech-itm/bpatel68.git
 
-sudo cp ./bpatel68/itmo-544/mp1/index.html .
+cd ./bpatel68/itmd-562/week-06/NodeProjectFiles
 
-sudo rm -rf bpatel68
+npm install
+
+pm2 start server.js --name "user-app"
+
+#pm2 delete/stop "user-app"
+
+#####################
 
 #Wait up to 10 mins to format and mount additional EBS volume. Retry to mount every 15 sec.
 
