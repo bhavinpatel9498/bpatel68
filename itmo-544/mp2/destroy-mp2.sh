@@ -37,7 +37,7 @@ then
 		if [ ! -z "$InstanceIdList" ]
 		then
 			echo "Deregister instances from load balancer"
-			aws elb deregister-instances-from-load-balancer --load-balancer-name ${arrLoadBalancerList[$i-1]} --instances $InstanceIdList
+			tempVar=`aws elb deregister-instances-from-load-balancer --load-balancer-name ${arrLoadBalancerList[$i-1]} --instances $InstanceIdList`
 			
 			if [ "$?" -ne "0" ]
 			then
@@ -268,6 +268,148 @@ fi
 
 ############
 
+#Delete SNS
+
+echo "Delete SNS"
+
+sublist=`aws sns list-subscriptions --query 'Subscriptions[*].SubscriptionArn' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+if [ ! -z "$sublist" ]
+then
+
+	echo "Delete Subscriptions"
+
+	declare -a arrsublist=(${sublist})
+	# get length of an arrVolumesList
+	arrsublistLength=${#arrsublist[@]}
+	
+	for (( i=1; i<${arrsublistLength}+1; i++ ));
+	do			
+		aws sns unsubscribe --subscription-arn ${arrsublist[$i-1]} > /dev/null 2>&1
+
+	done
+	
+	echo "subscriptions deleted"
+
+else
+
+	echo "No subscriptions to delete"
+	
+fi
+
+############
+
+#Delete topics
+
+
+topiclist=`aws sns list-topics --query 'Topics[*].TopicArn' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+if [ ! -z "$topiclist" ]
+then
+
+	echo "Delete Topics"
+
+	declare -a arrtopiclist=(${topiclist})
+	# get length of an arrVolumesList
+	arrtopiclistLength=${#arrtopiclist[@]}
+	
+	for (( i=1; i<${arrtopiclistLength}+1; i++ ));
+	do			
+		aws sns delete-topic --topic-arn ${arrtopiclist[$i-1]} > /dev/null 2>&1
+
+	done
+	
+	echo "Topics deleted"
+
+else
+
+	echo "No Topics to delete"
+	
+fi
+
+
+############
+
+#Delete SQS
+
+sqslist=`aws sqs list-queues --queue-name-prefix bpatel68-sqs-mp2-msg --query 'QueueUrls[*]' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+if [ ! -z "$sqslist" ]
+then
+
+	echo "Delete SQS"
+
+	declare -a arrsqslist=(${sqslist})
+	# get length of an arrVolumesList
+	arrsqslistLength=${#arrsqslist[@]}
+	
+	for (( i=1; i<${arrsqslistLength}+1; i++ ));
+	do			
+		aws sqs delete-queue --queue-url ${arrsqslist[$i-1]} > /dev/null 2>&1
+
+	done
+	
+	echo "SQS deleted"
+
+else
+
+	echo "No SQS to delete"
+	
+fi
+
+
+############
+
+#Delete RDS
+
+rdsval=`aws rds describe-db-instances --db-instance-identifier bhavin-mp2-db >/dev/null 2>&1`
+
+if [ "$?" -ne "0" ]
+then
+	echo "No RDS to delete"
+else
+
+	if [ ! -z "$rdsval" ]
+	then
+		
+		aws rds delete-db-instance --db-instance-identifier bhavin-mp2-db --skip-final-snapshot >/dev/null 2>&1
+		
+		if [ "$?" -ne "0" ]
+		then
+			echo "Either RDS is being deleted or pending. Try again in a while."
+		else
+			echo "RDS Delete initiated"
+		fi	
+
+	else
+
+		echo "No RDS to delete"
+	
+	fi
+	
+fi
+
+
+
+############
 
 echo "End of Destroy Script"
 

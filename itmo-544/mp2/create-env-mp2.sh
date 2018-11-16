@@ -11,11 +11,13 @@ cd /home/ubuntu
 
 sudo git clone git@github.com:illinoistech-itm/bpatel68.git
 
-cd ./bpatel68/itmd-562/week-06/NodeProjectFiles
+cd ./bpatel68/itm0-544/mp2/node-proj-translator-ui
 
 npm install
 
-pm2 start server.js --name "user-app"
+sudo chown -R ubuntu:ubuntu /home/ubuntu
+
+pm2 start server.js --name "translator-app"
 
 #pm2 delete/stop "user-app"
 

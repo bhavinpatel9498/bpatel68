@@ -56,6 +56,13 @@ fi
 
 echo "creating RDS"
 
+groupid=`aws ec2 describe-security-groups --group-names $3 --query "SecurityGroups[*].GroupId" --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
 
 aws rds create-db-instance --allocated-storage 5 --db-instance-class db.t2.micro --db-instance-identifier bhavin-mp2-db --engine mysql --master-username dbuser --master-user-password dbpassword --availability-zone us-west-2b --vpc-security-group-ids $groupid
 
@@ -97,6 +104,8 @@ then
 	exit 1;
 fi
 
+sleep 5
+
 echo "SQS Created"
 
 ############
@@ -116,6 +125,16 @@ fi
 aws s3api wait bucket-exists --bucket $6
 
 echo "Bucket Created"
+
+############
+
+echo "Open ports 3306-db and 3000-node"
+
+aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 3306 --cidr 0.0.0.0/0 > /dev/null 2>&1
+
+aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 3000 --cidr 0.0.0.0/0 > /dev/null 2>&1
+
+############
 
 #Create EC2 Instance
 
@@ -221,18 +240,40 @@ echo "Instance status ok"
 
 ############
 
+#Creating standalone instance for job processing
 
-echo "Creating Load balancer now."
-
-#Create load balancer
-
-groupid=`aws ec2 describe-security-groups --group-names $3 --query "SecurityGroups[*].GroupId" --output text`
+jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2-standalone.sh" --query 'Instances[*].InstanceId' --output text`
 
 if [ "$?" -ne "0" ]
 then
 	echo "Terminate Script"
 	exit 1;
 fi
+
+echo "Waiting for standalone instance to run."
+aws ec2 wait instance-running --instance-ids $jobInstanceid
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "standalone is running. Waiting for System status ok and Instance status ok."
+
+aws ec2 wait system-status-ok --instance-ids $jobInstanceid
+echo "standalone system status ok"
+
+aws ec2 wait instance-status-ok --instance-ids $jobInstanceid
+echo "standalone Instance status ok"
+
+
+
+############
+
+echo "Creating Load balancer now."
+
+#Create load balancer
 
 
 #aws elb create-load-balancer --load-balancer-name $5 --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --availability-zones us-west-2b --security-groups $groupid
