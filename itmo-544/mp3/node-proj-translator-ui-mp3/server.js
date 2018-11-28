@@ -11,14 +11,32 @@ let s3 = new AWS.S3();
 let sns = new AWS.SNS({region: 'us-west-2'});
 let sqs = new AWS.SQS({region: 'us-west-2'});
 let rds = new AWS.RDS({region: 'us-west-2'});
+let elasticache = new AWS.ElastiCache();
+let redis = require('redis');
+
+let client = redis.createClient(6379, 'bhavin-mp3-cache.z1ms9b.0001.usw2.cache.amazonaws.com');
+
+client.set("addbtnConfig", "enable", function(error) { 
+
+	console.log("put error"+error);
+
+} );
+
+client.get("addbtnConfig", function(error, value) {
+
+	if(error)
+		console.log("Fetch "+error);
+
+	console.log(value);
+ });
 
 let session = require('client-sessions');
 
 app.use(session({
   cookieName: 'session',
   secret: 'dummy_secret_key',
-  duration: 20 * 1000,
-  activeDuration: 20 * 1000,
+  duration: 10 * 1000,
+  activeDuration: 10 * 1000,
 }));
 
 let rdsParsms = {
