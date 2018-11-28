@@ -67,8 +67,9 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
   		//console.log(cacheURL);
   		//console.log(cachePort);
 
-  		let redisclient = redis.createClient(cachePort, cacheURL);
+  		//let redisclient = redis.createClient(cachePort, cacheURL);
 
+  		let redisclient = redis.createClient("6379", "127.0.0.1");
 
 		let rdsParsms = {
 
@@ -214,7 +215,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 												}
 												else
 												{
-													console.log(result[0].val);
+													//console.log(result[0].val);
 
 													if(!result[0])
 													{
@@ -230,7 +231,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 
 															redisclient.set("addbtnConfig", "enable", function(error) { 
 
-																console.log("put error"+error);
+																//console.log("put error"+error);
 
 															});		
 														});	
@@ -241,7 +242,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 
 														redisclient.set("addbtnConfig", result[0].val, function(error) { 
 
-															console.log("put error"+error);
+															//console.log("put error"+error);
 
 														});	
 													}
@@ -272,9 +273,9 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 														redisclient.get("addbtnConfig", function(error, value) {
 
 															if(error)
-																//console.log("Fetch "+error);
+																console.log("Fetch "+error);
 
-															console.log(value);
+															//console.log("redis fetch :"+value);
 
 															if(value=="enable" || value == "disable")
 															{
@@ -293,7 +294,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 
 																		redisclient.set("addbtnConfig", result22[0].val, function(error) { 
 
-																			console.log("put error"+error);
+																			//console.log("put error"+error);
 
 																		});
 
@@ -360,7 +361,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 																	
 																	redisclient.set("addbtnConfig", newconfig, function(error) { 
 
-																		console.log("put error"+error);
+																		//console.log("put error"+error);
 
 																	});
 
@@ -477,7 +478,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 													{
 			   											if (err)
 			   											{
-			   												//console.log(err, err.stack);
+			   												console.log(err, err.stack);
 			   											}
 			   											else
 			   											{
@@ -515,7 +516,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 
 												 					if(errs3)
 												 					{
-												 						//console.log(errs3);
+												 						console.log(errs3);
 												 					}
 												 					else
 												 					{									 						
@@ -561,6 +562,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 
 												 							}
 
+												 							console.log("here");
 												 							//cache changes
 
 												 							redisclient.get("addbtnConfig", function(error, value) {
@@ -568,7 +570,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 																				if(error)
 																					console.log("Fetch "+error);
 
-																				console.log(value);
+																				console.log("redis login fetch"+value);
 
 																				if(value == "enable" || value == "disable")
 																				{
@@ -586,7 +588,7 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 																						{
 																							redisclient.set("addbtnConfig", result22[0].val, function(error) { 
 
-																								console.log("put error"+error);
+																								//console.log("put error"+error);
 
 																							});
 
@@ -614,20 +616,36 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
 			   											     else
 			   											     {
 
-											     				conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err33, result33, fields33)
-																{
-																	if(err33)
-																	{
+											     				redisclient.get("addbtnConfig", function(error, value) {
 
+																	if(error)
+																		//console.log("Fetch "+error);
+
+																	console.log(value);
+
+																	if(value == "enable" || value == "disable")
+																	{
+																		let temparr = [];
+																		res.status(200).render('messageGallery', {messageList:temparr, addflag:value});
 																	}
 																	else
 																	{
-																		let temparr = [];
-																		res.status(200).render('messageGallery', {messageList:temparr, addflag:result33[0].val});	
+													     				conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err33, result33, fields33)
+																		{
+																			if(err33)
+																			{
+
+																			}
+																			else
+																			{
+																				let temparr = [];
+																				res.status(200).render('messageGallery', {messageList:temparr, addflag:result33[0].val});	
+
+																			}
+																		});
 
 																	}
-																});
-
+ 																});
 
 			   											     }
 			   											     
