@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3001
+const port = 3000
 
 const s3BucketName = "bpatel68-data-mp2";
 const sqsName	= "bpatel68-sqs-mp2-msg";
