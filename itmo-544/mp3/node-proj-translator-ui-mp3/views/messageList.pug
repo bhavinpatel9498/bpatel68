@@ -1,0 +1,58 @@
+doctype html
+html(lang='en')
+  head
+    title Message List
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-success
+        .panel-heading(style='height: 150px;')
+          h2 Messages List
+          button#addBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;') Add Message
+          button#adminBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;') Admin Page
+        .panel-body
+          table.table.table-striped
+            thead
+              tr
+                th(width='50%') Message UUID
+                th(width='30%') User Name
+                th(width='20%') Status
+            tbody
+                each message in messageList
+                  tr
+                    td(class='h3')
+                      a(href='/messages/view/' + message.id)= message.messageuuid
+                    td= message.username
+                    td= message.jobstatus
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+        let addflag = "#{addflag}";
+
+        if(addflag == "enable")
+        {
+          $('#addBtn').attr('disabled',false);
+        }
+        else
+        {
+          $('#addBtn').attr('disabled',true);
+        }
+
+
+        $('#addBtn').bind("click",function(){
+         
+          window.location.href = "/messages/add";
+        });
+
+        $('#adminBtn').bind("click",function(){
+         
+          window.location.href = "/messages/admin";
+        });
+
+
+      });

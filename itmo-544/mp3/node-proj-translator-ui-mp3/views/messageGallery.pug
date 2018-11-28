@@ -1,0 +1,95 @@
+doctype html
+html(lang='en')
+  head
+    title Message List
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-success
+        .panel-heading(style='height: 150px;')
+          h2 Messages Gallery
+          button#homeBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;') Home Page
+          button#exportBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;') Export Messages
+          button#msgEnableBtn.btn.btn-info(type='button', style='margin: 10px; width:200px;')
+          Messages
+
+          form#dataFormDownload(method='POST')
+
+          form#dataFormDisable(method='PUT')
+        .panel-body
+          table.table.table-striped
+            thead
+              tr
+                th(width='50%') Message UUID
+                th(width='30%') Original Text
+                th(width='20%') Converted Text
+            tbody
+                each message in messageList
+                  tr
+                    td(class='h4')= message.messageuuid
+                    td= message.originaltext
+                    td= message.processedText
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+        let addflag = "#{addflag}";
+
+        if(addflag == "enable")
+        {
+          $("#msgEnableBtn").html('Disable Add Messages');
+        }
+        else
+        {
+          $("#msgEnableBtn").html('Enable Add Messages');
+        }
+        
+
+        $('#msgEnableBtn').bind("click",function(){
+
+            $('#msgEnableBtn').attr('disabled',true);
+
+            $.ajax({
+
+                'url' : '/messages/admin/config',
+                'type' : 'POST',
+
+                'success' : function(data) {              
+                    
+                    if($("#msgEnableBtn").html() == "Disable Add Messages")
+                    {
+                      $("#msgEnableBtn").html('Enable Add Messages');
+                      addflag = "disable"
+                    }
+                    else
+                    {
+                      $("#msgEnableBtn").html('Disable Add Messages');
+                      addflag = "enable";
+                    }
+
+                    $('#msgEnableBtn').attr('disabled',false);
+                },
+                'error' : function(request,error)
+                {
+                   //
+                }
+            });
+        });
+
+        $('#homeBtn').bind("click",function(){
+         
+          window.location.href = "/messages";
+        });
+
+        $('#exportBtn').bind("click",function(){
+
+          $('#dataFormDownload').submit();
+
+        });//export btn
+
+
+      });

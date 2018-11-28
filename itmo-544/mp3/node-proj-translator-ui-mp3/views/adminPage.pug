@@ -1,0 +1,59 @@
+doctype html
+html(lang='en')
+  head
+    title Admin Login
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  body
+    .container(align='center')
+      .panel.panel-primary
+        .panel-heading(style='height: 100px;')
+          h2 Admin Login
+        .panel-body
+          form#dataForm(method='POST')
+            .form-group(style='width: 30%')
+              label(for='username') User Name
+              input#username.form-control(type='text', name='username', value='admin')
+            .form-group(style='width: 30%')
+              label(for='pass') Password
+              input#pass.form-control(type='password', name='pass', value='admin')
+   
+          button#homeBtn.btn.btn-success(type='button', style='margin: 10px') Home Page
+          button#saveBtn.btn.btn-warning(type='button', style='margin: 10px') Login
+                    
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(type='text/javascript', src='http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js')
+
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    script(type='text/javascript').
+      $(document).ready(function() {
+
+     
+      $('#homeBtn').bind("click",function(){
+          window.location.href = "/messages";
+      });
+
+      $('#dataForm').validate({ // initialize the plugin
+        rules: 
+        {
+            pass: {
+                required: true,
+                minlength: 1
+            },
+            username: {
+                required: true,
+                minlength: 1
+            }
+        }
+       });
+
+
+      $('#saveBtn').bind("click",function(){
+
+      console.log('submit clicked');
+      $('#dataForm').submit();
+
+      });//save btn
+     
+      });
