@@ -67,9 +67,9 @@ elasticache.describeCacheClusters(paramsCache, function(errcache, datacache) {
   		//console.log(cacheURL);
   		//console.log(cachePort);
 
-  		//let redisclient = redis.createClient(cachePort, cacheURL);
+  		let redisclient = redis.createClient(cachePort, cacheURL);
 
-  		let redisclient = redis.createClient("6379", "127.0.0.1");
+  		//let redisclient = redis.createClient("6379", "127.0.0.1");
 
 		let rdsParsms = {
 
