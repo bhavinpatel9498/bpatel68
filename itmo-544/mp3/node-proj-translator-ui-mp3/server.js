@@ -143,6 +143,49 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 										}    		
 									});	
 
+									let createTableConfigQuery = "CREATE TABLE IF NOT EXISTS nodedb.config ("+
+															"config VARCHAR(255) NOT NULL,"+
+															"val VARCHAR(255) NOT NULL"+
+															");"
+
+									con.query(createTableConfigQuery, function (err, result, fields)
+									{
+										if (err) 
+										{
+											console.log("table creation failed");
+											//console.log(err);
+										}    		
+									});	
+
+									//reading from replica
+									conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn'", function (err, result, fields)
+									{
+										if(err)
+										{
+											console.log(err);
+										}
+										else
+										{
+
+											if(!result[0])
+											{
+
+												let insertQuery = "INSERT INTO nodedb.config(config, val) VALUES ('addbtn','enable');"
+
+												con.query(insertQuery, function (err, result, fields)
+												{
+													if (err) 
+													{														
+														//console.log(err);
+													}    		
+												});	
+
+											}
+
+										}
+
+									});
+
 
 									//get all messages from DB
 
@@ -160,22 +203,25 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 											{
 												//console.log(result);
 
-
-					 							let fs = require('fs');
-					 							fs.readFile('setting.txt', 'utf8', function(errfsread, contentsread) {
-								
-													if(errfsread)
+												conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err22, result22, fields22)
+												{
+													if(err22)
 													{
-														console.log(errfsread);
+														res.status(200).render('ErrorPage', { errMsg: err22 });
 													}
 													else
 													{
 
-														res.status(200).render('messageList', { messageList: result, addflag:contentsread });														
+														//console.log(result22[0].val);
+														res.status(200).render('messageList', { messageList: result, addflag:result22[0].val });
 
 													}
 
+
 												});
+
+
+												//res.status(200).render('messageList', { messageList: result, addflag:contentsread });
 												
 											}
 
@@ -189,47 +235,50 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 										
 										if(req.session.user == "admin")
 										{
-											let fs = require('fs');
- 
-											fs.readFile('setting.txt', 'utf8', function(err, contents) {
-    											
-												if(err)
+
+											conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err22, result22, fields22)
+											{
+												if(err22)
 												{
-													console.log(err);
+													res.status(200).render('ErrorPage', { errMsg: err22 });
 												}
 												else
 												{
-  													let newContent= "";
 
-	    											if(contents == "enable")
-	    											{
-	    												newContent = "disable";
-	    											}
-	    											else
-	    											{
-	    												newContent="enable";
-	    											}
+													let oldconfig = result22[0].val;
+													let newconfig = "";
+						
 
-	    											fs.writeFile('setting.txt', newContent, function (errfs1) {
+													if(oldconfig == "enable")
+													{
+														newconfig = "disable"
+													}	
+													else
+													{
+														newconfig = "enable";
+													}	
 
-	    												if(errfs1)
-	    												{
+													
+													let updateQuery = "UPDATE nodedb.config SET val='"+newconfig+"' WHERE config = 'addbtn';"
 
-	    												}
-	    												else
-	    												{
-	    													res.status(204).send();	    													
-	    												}
+													con.query(updateQuery, function (err33, result33, fields33)
+													{
+														if (err33) 
+														{														
+															//console.log(err33);
+														}   
+														else
+														{
+															res.status(204).send()
+														} 		
+													});	
 
-
-	    											});
-
-    											}
-
+												}
 
 											});
 
 
+											//res.status(204).send()
 										}
 										else
 										{
@@ -391,7 +440,9 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 										 							arrConvText[msguuidVal] = text;
 										 						}
 
-										 						counter++;									 						
+										 						counter++;				
+
+										 						console.log(counter);					 						
 
 										 						if(counter < keySize)
 										 						{
@@ -414,23 +465,19 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 
 										 							}
 
-										 							let fs = require('fs');
-										 							fs.readFile('setting.txt', 'utf8', function(errfsread, contentsread) {
-	    											
-																		if(errfsread)
+										 							conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err22, result22, fields22)
+																	{
+																		if(err22)
 																		{
-																			console.log(errfsread);
+
 																		}
 																		else
 																		{
 
-																			res.status(200).render('messageGallery', {messageList:messages, addflag:contentsread});
+																			res.status(200).render('messageGallery', {messageList:messages, addflag:result22[0].val});	
 
 																		}
-
-																	});
-
-										 							
+																	});																									 							
 										 							
 										 						}
 
@@ -440,9 +487,29 @@ rds.describeDBInstances(rdsParsms, function(errRds, dataRds) {
 
 	   											     };//end tempfunc
 												     	
+	   											     if(arrKeys.length>0)
+	   											     {
+	   											     	tempfunc(arrKeys[0]);
+	   											     }
+	   											     else
+	   											     {
 
-												     tempfunc(arrKeys[0]);   											     
+									     				conRead.query("SELECT val FROM nodedb.config WHERE config = 'addbtn';", function (err33, result33, fields33)
+														{
+															if(err33)
+															{
 
+															}
+															else
+															{
+																let temparr = [];
+																res.status(200).render('messageGallery', {messageList:temparr, addflag:result33[0].val});	
+
+															}
+														});
+
+
+	   											     }
 	   											     
 	   											}
 
