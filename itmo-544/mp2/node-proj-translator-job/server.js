@@ -137,27 +137,38 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
 			 					const orgText = buf.toString('utf8');
 
 			 					
-			 					console.log(orgText);
+			 					//console.log(orgText);
 
 
-			 					const translate = require('google-translate-api');
+			 					// Imports the Google Cloud client library
+								const {Translate} = require('@google-cloud/translate');
+
+								// Your Google Cloud Platform project ID
+								const projectId = 'translate-proj-224011';
+
+								// Instantiates a client
+								const translate = new Translate({
+  									projectId: projectId,
+								});
 
 			 					let translatedText = '';
 
-			 					translate(orgText, {from: 'en', to: 'fr'}).then(res => {
+			 					translate
+  									.translate(orgText, "fr")
+  									.then(results => {
 								   
 									    //Put this string in s3
 
 									   // console.log(res);
 
-									    translatedText = res.text;
+									    translatedText = results[0];
 
 			
 									    let myKey = msguuid+"/translated";
 										let bodyText = translatedText;
 										let params = {Bucket: s3BucketName, Key: myKey, Body: bodyText, ACL: 'public-read'};
 
-										console.log("bodyText :"+bodyText);
+										//console.log("bodyText :"+bodyText);
 
 									    s3.putObject(params, function(err4, data4) {
 
@@ -166,7 +177,7 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
 									        }
 									        else
 									        {
-									        	console.log("data put success");
+									        	//console.log("data put success");
 
 									        	let updateQuery="UPDATE nodedb.messages SET s3urlprocessed = '"+
 									        	msguuid+"/translated', jobstatus='Completed' WHERE messageuuid='"+msguuid+"'";
@@ -192,7 +203,7 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
 														  else
 														  {
 
-														  	console.log("notification sent");
+														  	//console.log("notification sent");
 
 														  	
 														  	let sqsDeleteParams = {
@@ -205,7 +216,7 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
 																  	console.log(err7); // an error occurred
 																  else
 																  {
-																  	console.log("Msg deleted");
+																  	//console.log("Msg deleted");
 																  }     
 															
 															}); //end delete sqs msg

@@ -300,36 +300,6 @@ aws ec2 wait instance-status-ok --instance-ids $InstanceIdList
 echo "Instance status ok"
 
 
-############
-
-#Creating standalone instance for job processing
-
-jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3-standalone.sh" --query 'Instances[*].InstanceId' --output text`
-
-if [ "$?" -ne "0" ]
-then
-	echo "Terminate Script"
-	exit 1;
-fi
-
-echo "Waiting for standalone instance to run."
-aws ec2 wait instance-running --instance-ids $jobInstanceid
-
-if [ "$?" -ne "0" ]
-then
-	echo "Terminate Script"
-	exit 1;
-fi
-
-echo "standalone is running. Waiting for System status ok and Instance status ok."
-
-aws ec2 wait system-status-ok --instance-ids $jobInstanceid
-echo "standalone system status ok"
-
-aws ec2 wait instance-status-ok --instance-ids $jobInstanceid
-echo "standalone Instance status ok"
-
-
 
 ############
 
@@ -443,6 +413,36 @@ echo "Creating auto scaling group"
 #aws autoscaling create-auto-scaling-group --auto-scaling-group-name bhavin-mp3-auto-scaling --launch-configuration-name bhavin-mp3-launch-config --load-balancer-names $5 --health-check-type ELB --health-check-grace-period 120 --min-size 2 --max-size 6 --desired-capacity 3 --default-cooldown 300 --availability-zones us-west-2b
 
 echo "Auto scaling group created"
+
+
+############
+
+#Creating standalone instance for job processing
+
+jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3-standalone.sh" --query 'Instances[*].InstanceId' --output text`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "Waiting for standalone instance to run."
+aws ec2 wait instance-running --instance-ids $jobInstanceid
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
+
+echo "standalone is running. Waiting for System status ok and Instance status ok."
+
+aws ec2 wait system-status-ok --instance-ids $jobInstanceid
+echo "standalone system status ok"
+
+aws ec2 wait instance-status-ok --instance-ids $jobInstanceid
+echo "standalone Instance status ok"
 
 ############
 
