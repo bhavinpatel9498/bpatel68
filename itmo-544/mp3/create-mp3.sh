@@ -184,7 +184,7 @@ aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 6
 
 echo "Creating ElastiCache"
 
-elastioutput=`aws elasticache create-cache-cluster --cache-cluster-id bpatel68-mp3-cache --preferred-availability-zone us-west-2b --engine redis --num-cache-nodes 1 --cache-node-type cache.t1.micro --security-group-ids groupid`
+elastioutput=`aws elasticache create-cache-cluster --cache-cluster-id bpatel68-mp3-cache --preferred-availability-zone us-west-2b --engine redis --num-cache-nodes 1 --cache-node-type cache.t1.micro --security-group-ids $groupid`
 
 
 echo "Waiting for Cache to be Available"
