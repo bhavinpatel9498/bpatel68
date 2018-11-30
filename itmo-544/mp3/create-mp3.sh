@@ -69,7 +69,7 @@ temprdsval=`aws rds create-db-instance --allocated-storage 5 --backup-retention-
 if [ "$?" -ne "0" ]
 then
 	echo "Terminate Script"
-	#exit 1;
+	exit 1;
 fi
 
 echo "Waiting for RDS to be available"
@@ -101,7 +101,7 @@ temprdsreplica=`aws rds create-db-instance-read-replica --db-instance-identifier
 if [ "$?" -ne "0" ]
 then
 	echo "Terminate Script"
-	#exit 1;
+	exit 1;
 fi
 
 echo "Waiting for RDS Replica to be available"
@@ -185,6 +185,12 @@ aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 6
 echo "Creating ElastiCache"
 
 elastioutput=`aws elasticache create-cache-cluster --cache-cluster-id bpatel68-mp3-cache --preferred-availability-zone us-west-2b --engine redis --num-cache-nodes 1 --cache-node-type cache.t1.micro --security-group-ids $groupid`
+
+if [ "$?" -ne "0" ]
+then
+	echo "Terminate Script"
+	exit 1;
+fi
 
 
 echo "Waiting for Cache to be Available"
@@ -396,7 +402,7 @@ echo "Stickiness policy applied to load balancer."
 
 echo "Creating launch configurations"
 
-#aws autoscaling create-launch-configuration --launch-configuration-name bhavin-mp3-launch-config --key-name $2 --image-id $1 --security-groups $3 --instance-type t2.micro --user-data "file://./create-env-mp3.sh" --iam-instance-profile admin-role --block-device-mappings "[{\"DeviceName\": \"/dev/xvdh\",\"Ebs\":{\"VolumeSize\":10}}]"
+aws autoscaling create-launch-configuration --launch-configuration-name bhavin-mp3-launch-config --key-name $2 --image-id $1 --security-groups $3 --instance-type t2.micro --user-data "file://./create-env-mp3.sh" --iam-instance-profile admin-role --block-device-mappings "[{\"DeviceName\": \"/dev/xvdh\",\"Ebs\":{\"VolumeSize\":10}}]"
 
 if [ "$?" -ne "0" ]
 then
@@ -410,7 +416,7 @@ echo "Launch configurations created"
 
 echo "Creating auto scaling group"
 
-#aws autoscaling create-auto-scaling-group --auto-scaling-group-name bhavin-mp3-auto-scaling --launch-configuration-name bhavin-mp3-launch-config --load-balancer-names $5 --health-check-type ELB --health-check-grace-period 120 --min-size 2 --max-size 6 --desired-capacity 3 --default-cooldown 300 --availability-zones us-west-2b
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name bhavin-mp3-auto-scaling --launch-configuration-name bhavin-mp3-launch-config --load-balancer-names $5 --health-check-type ELB --health-check-grace-period 120 --min-size 2 --max-size 6 --desired-capacity 3 --default-cooldown 300 --availability-zones us-west-2b
 
 echo "Auto scaling group created"
 

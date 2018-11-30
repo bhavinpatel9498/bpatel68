@@ -3,18 +3,62 @@
 
 #Delete Launch configurations and Auto Scaling Group
 
-echo "Delete Auto Scaling Group"
+autoGrpId=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name bhavin-mp3-auto-scaling --output text`
 
-aws autoscaling delete-auto-scaling-group --auto-scaling-group-name bhavin-mp3-auto-scaling --force-delete
+if [ "$?" -ne "0" ]
+then
+	echo "No AutoScaling Group to delete"
+else
+	if [ ! -z "$autoGrpId" ]
+	then
+		echo "Delete Auto Scaling Group"
+		
+		aws autoscaling delete-auto-scaling-group --auto-scaling-group-name bhavin-mp3-auto-scaling --force-delete >/dev/null 2>&1
+		
+		if [ "$?" -ne "0" ]
+		then
+			echo "Either Auto Scaling Group is being deleted or pending. Try again in a while."
+		else
+			echo "Auto Scaling Group Deleted"
+		fi
+	
+	else
 
-echo "Auto Scaling group deleted"
+		echo "No Auto Scaling Group to Delete"
+	
+	fi
+
+fi
 
 
-echo "Delete Launch Configurations"
 
-aws autoscaling delete-launch-configuration --launch-configuration-name bhavin-mp3-launch-config
+autoLaunchId=`aws autoscaling describe-launch-configurations --launch-configuration-names bhavin-mp3-launch-config --output text`
 
-echo "Launch Configurations deleted"
+if [ "$?" -ne "0" ]
+then
+	echo "No Launch Config to delete"
+else
+	if [ ! -z "$autoLaunchId" ]
+	then
+		echo "Delete Launch Config"
+		
+		aws autoscaling delete-launch-configuration --launch-configuration-name bhavin-mp3-launch-config >/dev/null 2>&1
+		
+		if [ "$?" -ne "0" ]
+		then
+			echo "Either Launch Config is being deleted or pending. Try again in a while."
+		else
+			echo "Launch Config Deleted"
+		fi
+	
+	else
+
+		echo "No Launch Config to Delete"
+	
+	fi
+
+fi
+
 
 ###################
 loadBalancerList=`aws elb describe-load-balancers --query 'LoadBalancerDescriptions[*].LoadBalancerName' --output text`
@@ -407,7 +451,7 @@ else
 	if [ ! -z "$rdsval" ]
 	then
 		
-		#aws rds delete-db-instance --db-instance-identifier bhavin-mp2-db-read --skip-final-snapshot >/dev/null 2>&1
+		aws rds delete-db-instance --db-instance-identifier bhavin-mp2-db-read --skip-final-snapshot >/dev/null 2>&1
 		
 		if [ "$?" -ne "0" ]
 		then
@@ -416,7 +460,7 @@ else
 			echo "RDS Read Replica Delete initiated"
 		fi
 		
-		#aws rds delete-db-instance --db-instance-identifier bhavin-mp2-db --skip-final-snapshot >/dev/null 2>&1
+		aws rds delete-db-instance --db-instance-identifier bhavin-mp2-db --skip-final-snapshot >/dev/null 2>&1
 		
 		if [ "$?" -ne "0" ]
 		then
@@ -458,7 +502,7 @@ else
 	
 	else
 
-		echo "No Cache to Delete"
+		echo "No ElastiCache to Delete"
 	
 	fi
 
