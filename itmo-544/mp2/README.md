@@ -7,7 +7,7 @@
 |:--:| 
 | *Sample o/p of initial destroy scripts* |
 
-### 3. Run create-mp2.sh to create EC2 instances, ELB, EBS, and S3 bucket. Sample script with positional parameters provided below.
+### 3. Run create-mp2.sh to create EC2 instances, ELB, EBS, and S3 bucket. Sample script with positional parameters provided below. All other parameters are same as mp1 except the last one where you have to give IAM role name.
 
    *./create-mp2.sh ami-0f3871024fa157995 bhavin_itmo544_key itmo544-default-group-bhavin 1 bhavin-elb-itmo544 bpatel68-data-mp2 admin-role*
 
@@ -17,6 +17,21 @@
    * SQS Name is always used as bpatel68-sqs-mp2-msg.
    * Replace your key and group name.
    * Necessary ports are open for your security group. I am opening ports 3000 and 3306 via commands but this is just to make sure they are open.
+   * Make sure your AWS CLI user has AdministratorAccess policy attached. Sample policy below.
+
+   {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
+}
+
+   * Make sure your IAM role has following policies attached. AmazonRDSFullAccess, AmazonSQSFullAccess, AmazonElastiCacheFullAccess, AmazonS3FullAccess and AmazonSNSFullAccess.
+
 
 ### 4. On successful execution, you should see an o/p like below screenshot on console.
 
