@@ -2,7 +2,7 @@
 
 #_=''
 
-if [ $# -ne 6 ]
+if [ $# -ne 7 ]
 then
 
 	echo "Provide only six positional parameters"
@@ -48,6 +48,13 @@ fi
 if [ -z $6 ]
 then
 	echo "Provide valid S3-bucket-name"
+	exit 1
+fi
+
+
+if [ -z $7 ]
+then
+	echo "Provide valid IAM Role"
 	exit 1
 fi
 
@@ -140,7 +147,7 @@ aws ec2 authorize-security-group-ingress --group-name $3 --protocol tcp --port 3
 
 #InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --query 'Instances[*].InstanceId' --output text`
 
-InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2.sh" --query 'Instances[*].InstanceId' --output text` 
+InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=$7 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2.sh" --query 'Instances[*].InstanceId' --output text` 
 
 if [ "$?" -ne "0" ]
 then
@@ -242,7 +249,7 @@ echo "Instance status ok"
 
 #Creating standalone instance for job processing
 
-jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2-standalone.sh" --query 'Instances[*].InstanceId' --output text`
+jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=$7 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp2-standalone.sh" --query 'Instances[*].InstanceId' --output text`
 
 if [ "$?" -ne "0" ]
 then
