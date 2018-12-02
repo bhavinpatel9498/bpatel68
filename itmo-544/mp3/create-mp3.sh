@@ -2,7 +2,7 @@
 
 #_=''
 
-if [ $# -ne 6 ]
+if [ $# -ne 7 ]
 then
 
 	echo "Provide only six positional parameters"
@@ -51,6 +51,11 @@ then
 	exit 1
 fi
 
+if [ -z $7 ]
+then
+	echo "Provide valid IAM Role"
+	exit 1
+fi
 
 ############
 
@@ -208,7 +213,7 @@ echo "ElastiCache Redis Created"
 
 #InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --query 'Instances[*].InstanceId' --output text`
 
-InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3.sh" --query 'Instances[*].InstanceId' --output text` 
+InstanceIdList=`aws ec2 run-instances --image-id $1 --count $4 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=$7 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3.sh" --query 'Instances[*].InstanceId' --output text` 
 
 if [ "$?" -ne "0" ]
 then
@@ -402,7 +407,7 @@ echo "Stickiness policy applied to load balancer."
 
 echo "Creating launch configurations"
 
-aws autoscaling create-launch-configuration --launch-configuration-name bhavin-mp3-launch-config --key-name $2 --image-id $1 --security-groups $3 --instance-type t2.micro --user-data "file://./create-env-mp3.sh" --iam-instance-profile admin-role --block-device-mappings "[{\"DeviceName\": \"/dev/xvdh\",\"Ebs\":{\"VolumeSize\":10}}]"
+aws autoscaling create-launch-configuration --launch-configuration-name bhavin-mp3-launch-config --key-name $2 --image-id $1 --security-groups $3 --instance-type t2.micro --user-data "file://./create-env-mp3.sh" --iam-instance-profile $7 --block-device-mappings "[{\"DeviceName\": \"/dev/xvdh\",\"Ebs\":{\"VolumeSize\":10}}]"
 
 if [ "$?" -ne "0" ]
 then
@@ -425,7 +430,7 @@ echo "Auto scaling group created"
 
 #Creating standalone instance for job processing
 
-jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=admin-role --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3-standalone.sh" --query 'Instances[*].InstanceId' --output text`
+jobInstanceid=`aws ec2 run-instances --image-id $1 --count 1 --instance-type t2.micro --key-name $2 --security-groups $3 --iam-instance-profile Name=$7 --placement AvailabilityZone=us-west-2b --user-data "file://./create-env-mp3-standalone.sh" --query 'Instances[*].InstanceId' --output text`
 
 if [ "$?" -ne "0" ]
 then
